@@ -1,7 +1,7 @@
 {
   "name": "flick-x",
-  "version": "1.8.10",
-  "description": "An Electron application for AI",
+  "version": "0.0.8",
+  "description": "视途科技Agent应用程序客户端",
   "main": "./out/main/index.mjs",
   "engines": {
     "node": ">=21.1.0"
