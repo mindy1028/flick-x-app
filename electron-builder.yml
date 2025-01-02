@@ -1,4 +1,4 @@
-appId: cn.junki.app
+appId: cn.sitoai.app
 productName: Flick-X
 directories:
   buildResources: build
@@ -34,7 +34,7 @@ linux:
     - AppImage
     - snap
     - deb
-  maintainer: junki.cn
+  maintainer: sitoai.cn
   category: Utility
 appImage:
   artifactName: ${name}-${version}.${ext}

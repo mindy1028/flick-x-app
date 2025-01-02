@@ -54,7 +54,7 @@ onMounted(() => {
     <div class="provider-list">
       <div class="provider-list-title">
         <div class="provider-list-title-left">{{ $t('welcomePage.title') }}</div>
-        <div class="provider-list-title-right">&copy; 2024 Junki</div>
+        <div class="provider-list-title-right">&copy; 2024 sitoai</div>
       </div>
       <AssistantAvatar
         v-for="(p, index) in providers"
