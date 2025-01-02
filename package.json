@@ -1,9 +1,8 @@
 {
-  "name": "aihub",
+  "name": "flick-x",
   "version": "1.8.10",
   "description": "An Electron application for AI",
   "main": "./out/main/index.mjs",
-  "author": "junki.cn",
   "engines": {
     "node": ">=21.1.0"
   },

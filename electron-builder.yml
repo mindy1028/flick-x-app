@@ -1,5 +1,5 @@
 appId: cn.junki.app
-productName: 视途
+productName: Flick-X
 directories:
   buildResources: build
 files:
@@ -13,7 +13,7 @@ files:
 asarUnpack:
   - resources/**
 win:
-  executableName: 视途
+  executableName: Flick-X
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
@@ -42,5 +42,5 @@ npmRebuild: false
 publish:
   provider: github
   owner: classfang
-  repo: 视途
+  repo: Flick-X
   private: true
