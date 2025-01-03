@@ -243,7 +243,8 @@ watch(
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      color: var(--color-text-3);
+      color: #fff;
+      // color: var(--color-text-3);
     }
   }
 

@@ -41,6 +41,6 @@ appImage:
 npmRebuild: false
 publish:
   provider: github
-  owner: classfang
+  owner: sitoai
   repo: Flick-X
   private: true

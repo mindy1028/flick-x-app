@@ -616,7 +616,8 @@ watchEffect(() => {
 
       .search-input-send-btn-active {
         stroke-width: 6;
-        color: rgb(var(--primary-6));
+            // color: rgb(var(--primary-6));
+            color: #ef4477;
       }
     }
   }

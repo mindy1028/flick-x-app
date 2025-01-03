@@ -76,20 +76,10 @@ watch(
       </div>
       <template #footer>
         <div style="display: flex; gap: 10px">
-          <a-button size="small" @click="notificationStore.notifications = []">
+          <a-button size="small" @click="notificationStore.notifications = []" class="tooltip-button">
             <a-space :size="5">
               <icon-delete />
               <span>{{ $t('notification.clear') }}</span>
-            </a-space>
-          </a-button>
-          <a-button
-            style="margin-left: auto"
-            size="small"
-            @click="openInBrowser('https://github.com/classfang/AIHub/issues/new')"
-          >
-            <a-space :size="5">
-              <icon-bug />
-              <span>{{ $t('notification.issues') }}</span>
             </a-space>
           </a-button>
         </div>
@@ -99,6 +89,10 @@ watch(
 </template>
 
 <style lang="less" scoped>
+.tooltip-button:hover{
+  background-color: #ef4477 !important;
+  color: #fff !important;
+}
 .notification-page {
   height: 60vh;
   overflow-y: auto;

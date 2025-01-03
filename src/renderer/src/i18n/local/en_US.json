@@ -155,8 +155,8 @@
     },
     "about": {
       "name": "About",
-      "sourceCode": "Source address",
-      "contactAuthor": "Contact author",
+      "companyEmail": "Contact Us",
+      "contactAuthor": "Subscribe Us",
       "version": {
         "name": "Application version",
         "current": "Current version",

@@ -83,7 +83,8 @@ onMounted(() => {
 
     :deep(.welcome-text-loading) {
       font-weight: 500;
-      color: rgb(var(--primary-6));
+            // color: rgb(var(--primary-6));
+            color: #ef4477;
       animation: alternate-hide-show 900ms ease-in-out infinite;
     }
 

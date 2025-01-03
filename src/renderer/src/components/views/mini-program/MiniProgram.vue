@@ -257,6 +257,7 @@ onMounted(() => {
     position: absolute;
     right: 15px;
     bottom: 15px;
+    background-color: #EF4477;
   }
 
   .mini-program-webview {
