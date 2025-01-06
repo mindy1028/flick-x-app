@@ -147,7 +147,7 @@ const clearCacheHandle = async () => {
 const exportSettingBackup = () => {
   systemStore.globalLoading = true
   exportTextFile(
-    `setting-${formatDateTime(new Date(), 'YYYYMMDDHHmmss')}.aihub`,
+    `setting-${formatDateTime(new Date(), 'YYYYMMDDHHmmss')}.sito`,
     settingStore.getStoreJson
   )
   systemStore.globalLoading = false
@@ -156,7 +156,7 @@ const exportSettingBackup = () => {
 const exportDataBackup = async () => {
   systemStore.globalLoading = true
   exportTextFile(
-    `data-${formatDateTime(new Date(), 'YYYYMMDDHHmmss')}.aihub`,
+    `data-${formatDateTime(new Date(), 'YYYYMMDDHHmmss')}.sito`,
     JSON.stringify({
       userStore: userStore.getStoreJson,
       assistantStore: assistantStore.getStoreJson,
@@ -179,7 +179,7 @@ const importSettingBackup = () => {
     cancelText: t('common.cancel'),
     onOk: async () => {
       try {
-        const selectFileResult = await selectFileAndRead(['aihub'])
+        const selectFileResult = await selectFileAndRead(['sito'])
         if (selectFileResult) {
           systemStore.globalLoading = true
           const importFlag = settingStore.setStoreFromJson(
@@ -208,7 +208,7 @@ const importDataBackup = () => {
     cancelText: t('common.cancel'),
     onOk: async () => {
       try {
-        const selectFileResult = await selectFileAndRead(['aihub'])
+        const selectFileResult = await selectFileAndRead(['sito'])
         if (selectFileResult) {
           let importFlag = false
           systemStore.globalLoading = true
@@ -237,17 +237,6 @@ const importDataBackup = () => {
     }
   })
 }
-
-watch(
-  () => settingStore.aiCalendar.bigModel.provider,
-  (value) => {
-    if (chatModels[value] && chatModels[value][0]) {
-      settingStore.aiCalendar.bigModel.model = chatModels[value][0].name
-    } else {
-      settingStore.aiCalendar.bigModel.model = ''
-    }
-  }
-)
 
 // 自定义样式实时生效
 watch(
@@ -296,601 +285,66 @@ onMounted(() => {
     </div>
 
     <!-- 设置Modal -->
-    <a-modal
-      v-model:visible="systemStore.settingModal.visible"
-      :footer="false"
-      unmount-on-close
-      title-align="start"
-      width="80vw"
-    >
+    <a-modal v-model:visible="systemStore.settingModal.visible" :footer="false" unmount-on-close title-align="start"
+      width="80vw">
       <template #title> {{ $t('setting.name') }} </template>
       <!-- 设置页 -->
       <div class="setting-page">
         <a-tabs position="left" :default-active-key="settingDefaultActiveKey">
-          <!-- 应用 -->
-          <a-tab-pane key="app" :title="$t('setting.app.name')">
-            <a-tabs position="left">
-              <!-- 外观 -->
-              <a-tab-pane key="appearance" :title="$t('setting.app.appearance.name')">
-                <a-space direction="vertical" :size="25" fill class="setting-tab-content">
-                  <a-space direction="vertical" :size="10">
-                    <div>{{ $t('setting.app.appearance.theme.name') }}</div>
-                    <a-radio-group v-model="settingStore.app.themeModel" type="button" size="small">
-                      <a-radio :value="0">
-                        <IconSync />
-                        {{ $t('setting.app.appearance.theme.auto') }}
-                      </a-radio>
-                      <a-radio :value="1">
-                        <IconSun />
-                        {{ $t('setting.app.appearance.theme.light') }}
-                      </a-radio>
-                      <a-radio :value="2">
-                        <IconMoonFill />
-                        {{ $t('setting.app.appearance.theme.dark') }}
-                      </a-radio>
-                      <a-radio :value="3">
-                        <IconPalette />
-                        {{ $t('setting.app.appearance.theme.custom') }}
-                      </a-radio>
-                    </a-radio-group>
-                  </a-space>
-                  <a-space v-if="settingStore.app.themeModel === 3" direction="vertical" :size="10">
-                    <div>{{ $t('setting.app.appearance.theme.customEdit') }}</div>
-                    <div class="custom-theme-list">
-                      <div
-                        v-for="tk in Object.keys(defaultCustomThemeMap)"
-                        :key="tk"
-                        class="custom-theme-list-item"
-                      >
-                        <div class="custom-theme-list-item-label">{{ tk }}</div>
-                        <a-color-picker
-                          v-model="settingStore.app.customThemeMap[tk]"
-                          size="small"
-                          class="custom-theme-list-item-color-picker"
-                        />
-                      </div>
-                    </div>
-                    <a-button
-                      size="mini"
-                      @click="settingStore.app.customThemeMap = copyObj(defaultCustomThemeMap)"
-                    >
-                      <a-space :size="5">
-                        <icon-reply />
-                        <span>{{ $t('setting.app.appearance.theme.customEditReset') }}</span>
-                      </a-space>
-                    </a-button>
-                  </a-space>
-                  <a-space direction="vertical" :size="10" fill>
-                    <div>{{ $t('setting.app.appearance.fontSize') }}</div>
-                    <a-space :size="10">
-                      <div>{{ $t('setting.app.appearance.min') }}</div>
-                      <a-slider
-                        v-model="settingStore.app.fontSize"
-                        :min="1"
-                        :max="5"
-                        show-ticks
-                        style="width: 300px"
-                      />
-                      <div>{{ $t('setting.app.appearance.max') }}</div>
-                    </a-space>
-                  </a-space>
-                  <a-space direction="vertical" :size="10" fill>
-                    <div>{{ $t('setting.app.appearance.local') }}</div>
-                    <a-select
-                      v-model="settingStore.app.locale"
-                      size="small"
-                      :fallback-option="false"
-                    >
-                      <a-option value="zh_CN">中文</a-option>
-                      <a-option value="en_US">English</a-option>
-                    </a-select>
-                  </a-space>
-                </a-space>
-              </a-tab-pane>
-              <!-- 网络 -->
-              <a-tab-pane key="network" :title="$t('setting.app.network.name')">
-                <a-space direction="vertical" :size="25" fill class="setting-tab-content">
-                  <a-space direction="vertical" :size="10" fill>
-                    <div>{{ $t('setting.app.network.proxy') }}</div>
-                    <a-input
-                      v-model="settingStore.app.proxy"
-                      size="small"
-                      :placeholder="
-                        $t('common.pleaseEnter') + ' ' + $t('setting.app.network.proxy')
-                      "
-                      @change="setProxy(settingStore.app.proxy)"
-                    />
-                  </a-space>
-                </a-space>
-              </a-tab-pane>
-            </a-tabs>
-          </a-tab-pane>
-          <!-- 大模型 -->
-          <a-tab-pane key="bigModel" :title="$t('setting.bigModel.name')">
-            <a-tabs position="left">
-              <!-- OpenAI -->
-              <a-tab-pane key="openAI" :title="$t('setting.bigModel.openAI.name')">
-                <a-space direction="vertical" :size="25" fill class="setting-tab-content">
-                  <a-space direction="vertical" :size="10" fill>
-                    <div>{{ $t('common.officialWebsite') }}</div>
-                    <a-link @click="openInBrowser('https://openai.com')">https://openai.com</a-link>
-                  </a-space>
-                  <a-space direction="vertical" :size="10" fill>
-                    <div>{{ $t('setting.bigModel.openAI.baseUrl') }}</div>
-                    <a-input
-                      v-model="settingStore.openAI.baseUrl"
-                      size="small"
-                      :placeholder="
-                        $t('common.pleaseEnter') + ' ' + $t('setting.bigModel.openAI.baseUrl')
-                      "
-                    />
-                  </a-space>
-                  <a-space direction="vertical" :size="10" fill>
-                    <div>{{ $t('setting.bigModel.openAI.key') }}</div>
-                    <a-input-password
-                      v-model="settingStore.openAI.key"
-                      size="small"
-                      :placeholder="
-                        $t('common.pleaseEnter') + ' ' + $t('setting.bigModel.openAI.key')
-                      "
-                    />
-                  </a-space>
-                </a-space>
-              </a-tab-pane>
-              <!-- Ollama -->
-              <a-tab-pane key="ollama" :title="$t('setting.bigModel.ollama.name')">
-                <a-space direction="vertical" :size="25" fill class="setting-tab-content">
-                  <a-space direction="vertical" :size="25" fill class="setting-tab-content">
-                    <a-space direction="vertical" :size="10" fill>
-                      <div>{{ $t('common.officialWebsite') }}</div>
-                      <a-link @click="openInBrowser('https://ollama.com')"
-                        >https://ollama.com</a-link
-                      >
-                    </a-space>
-                    <a-space direction="vertical" :size="10" fill>
-                      <div>{{ $t('setting.bigModel.ollama.baseUrl') }}</div>
-                      <a-input
-                        v-model="settingStore.ollama.baseUrl"
-                        size="small"
-                        :placeholder="
-                          $t('common.pleaseEnter') + ' ' + $t('setting.bigModel.ollama.baseUrl')
-                        "
-                      />
-                    </a-space>
-                  </a-space>
-                </a-space>
-              </a-tab-pane>
-              <!-- Gemini -->
-              <a-tab-pane key="gemini" :title="$t('setting.bigModel.gemini.name')">
-                <a-space direction="vertical" :size="25" fill class="setting-tab-content">
-                  <a-space direction="vertical" :size="10" fill>
-                    <div>{{ $t('common.officialWebsite') }}</div>
-                    <a-link @click="openInBrowser('https://ai.google.dev/docs/gemini_api_overview')"
-                      >https://ai.google.dev/docs/gemini_api_overview</a-link
-                    >
-                  </a-space>
-                  <a-space direction="vertical" :size="10" fill>
-                    <div>{{ $t('setting.bigModel.gemini.baseUrl') }}</div>
-                    <a-input
-                      v-model="settingStore.gemini.baseUrl"
-                      size="small"
-                      :placeholder="
-                        $t('common.pleaseEnter') + ' ' + $t('setting.bigModel.gemini.baseUrl')
-                      "
-                    />
-                  </a-space>
-                  <a-space direction="vertical" :size="10" fill>
-                    <div>{{ $t('setting.bigModel.gemini.key') }}</div>
-                    <a-input-password
-                      v-model="settingStore.gemini.key"
-                      size="small"
-                      :placeholder="
-                        $t('common.pleaseEnter') + ' ' + $t('setting.bigModel.gemini.key')
-                      "
-                    />
-                  </a-space>
-                </a-space>
-              </a-tab-pane>
-              <!-- 智谱 -->
-              <a-tab-pane key="zhipuAI" :title="$t('setting.bigModel.zhipuAI.name')">
-                <a-space direction="vertical" :size="25" fill class="setting-tab-content">
-                  <a-space direction="vertical" :size="25" fill class="setting-tab-content">
-                    <a-space direction="vertical" :size="10" fill>
-                      <div>{{ $t('common.officialWebsite') }}</div>
-                      <a-link @click="openInBrowser('https://open.bigmodel.cn')"
-                        >https://open.bigmodel.cn</a-link
-                      >
-                    </a-space>
-                    <a-space direction="vertical" :size="10" fill>
-                      <div>{{ $t('setting.bigModel.zhipuAI.apiKey') }}</div>
-                      <a-input-password
-                        v-model="settingStore.zhipuAI.apiKey"
-                        size="small"
-                        :placeholder="
-                          $t('common.pleaseEnter') + ' ' + $t('setting.bigModel.zhipuAI.apiKey')
-                        "
-                      />
-                    </a-space>
-                  </a-space>
-                </a-space>
-              </a-tab-pane>
-              <!-- 通义千问 -->
-              <a-tab-pane key="tongyi" :title="$t('setting.bigModel.tongyi.name')">
-                <a-space direction="vertical" :size="25" fill class="setting-tab-content">
-                  <a-space direction="vertical" :size="25" fill class="setting-tab-content">
-                    <a-space direction="vertical" :size="10" fill>
-                      <div>{{ $t('common.officialWebsite') }}</div>
-                      <a-link @click="openInBrowser('https://tongyi.aliyun.com')"
-                        >https://tongyi.aliyun.com</a-link
-                      >
-                    </a-space>
-                    <a-space direction="vertical" :size="10" fill>
-                      <div>{{ $t('setting.bigModel.tongyi.apiKey') }}</div>
-                      <a-input-password
-                        v-model="settingStore.tongyi.apiKey"
-                        size="small"
-                        :placeholder="
-                          $t('common.pleaseEnter') + ' ' + $t('setting.bigModel.tongyi.apiKey')
-                        "
-                      />
-                    </a-space>
-                  </a-space>
-                </a-space>
-              </a-tab-pane>
-              <!-- 文心一言 -->
-              <a-tab-pane key="ernie" :title="$t('setting.bigModel.ernie.name')">
-                <a-space direction="vertical" :size="25" fill class="setting-tab-content">
-                  <a-space direction="vertical" :size="10" fill>
-                    <div>{{ $t('common.officialWebsite') }}</div>
-                    <a-link @click="openInBrowser('https://yiyan.baidu.com')"
-                      >https://yiyan.baidu.com</a-link
-                    >
-                  </a-space>
-                  <a-space direction="vertical" :size="10" fill>
-                    <div>{{ $t('setting.bigModel.ernie.apiKey') }}</div>
-                    <a-input-password
-                      v-model="settingStore.ernie.apiKey"
-                      size="small"
-                      :placeholder="
-                        $t('common.pleaseEnter') + ' ' + $t('setting.bigModel.ernie.apiKey')
-                      "
-                    />
-                  </a-space>
-                  <a-space direction="vertical" :size="10" fill>
-                    <div>{{ $t('setting.bigModel.ernie.secretKey') }}</div>
-                    <a-input-password
-                      v-model="settingStore.ernie.secretKey"
-                      size="small"
-                      :placeholder="
-                        $t('common.pleaseEnter') + ' ' + $t('setting.bigModel.ernie.secretKey')
-                      "
-                    />
-                  </a-space>
-                </a-space>
-              </a-tab-pane>
-              <!-- 讯飞星火 -->
-              <a-tab-pane key="spark" :title="$t('setting.bigModel.spark.name')">
-                <a-space direction="vertical" :size="25" fill class="setting-tab-content">
-                  <a-space direction="vertical" :size="10" fill>
-                    <div>{{ $t('common.officialWebsite') }}</div>
-                    <a-link @click="openInBrowser('https://xinghuo.xfyun.cn')"
-                      >https://xinghuo.xfyun.cn</a-link
-                    >
-                  </a-space>
-                  <a-space direction="vertical" :size="10" fill>
-                    <div>{{ $t('setting.bigModel.spark.appId') }}</div>
-                    <a-input
-                      v-model="settingStore.spark.appId"
-                      size="small"
-                      :placeholder="
-                        $t('common.pleaseEnter') + ' ' + $t('setting.bigModel.spark.appId')
-                      "
-                    />
-                  </a-space>
-                  <a-space direction="vertical" :size="10" fill>
-                    <div>{{ $t('setting.bigModel.spark.secret') }}</div>
-                    <a-input-password
-                      v-model="settingStore.spark.secret"
-                      size="small"
-                      :placeholder="
-                        $t('common.pleaseEnter') + ' ' + $t('setting.bigModel.spark.secret')
-                      "
-                    />
-                  </a-space>
-                  <a-space direction="vertical" :size="10" fill>
-                    <div>{{ $t('setting.bigModel.spark.key') }}</div>
-                    <a-input-password
-                      v-model="settingStore.spark.key"
-                      size="small"
-                      :placeholder="
-                        $t('common.pleaseEnter') + ' ' + $t('setting.bigModel.spark.key')
-                      "
-                    />
-                  </a-space>
-                </a-space>
-              </a-tab-pane>
-              <!-- 天工 -->
-              <a-tab-pane key="tiangong" :title="$t('setting.bigModel.tiangong.name')">
-                <a-space direction="vertical" :size="25" fill class="setting-tab-content">
-                  <a-space direction="vertical" :size="25" fill class="setting-tab-content">
-                    <a-space direction="vertical" :size="10" fill>
-                      <div>{{ $t('common.officialWebsite') }}</div>
-                      <a-link @click="openInBrowser('https://model-platform.tiangong.cn')"
-                        >https://model-platform.tiangong.cn</a-link
-                      >
-                    </a-space>
-                    <a-space direction="vertical" :size="10" fill>
-                      <div>{{ $t('setting.bigModel.tiangong.appKey') }}</div>
-                      <a-input-password
-                        v-model="settingStore.tiangong.appKey"
-                        size="small"
-                        :placeholder="
-                          $t('common.pleaseEnter') + ' ' + $t('setting.bigModel.tiangong.appKey')
-                        "
-                      />
-                    </a-space>
-                    <a-space direction="vertical" :size="10" fill>
-                      <div>{{ $t('setting.bigModel.tiangong.appSecret') }}</div>
-                      <a-input-password
-                        v-model="settingStore.tiangong.appSecret"
-                        size="small"
-                        :placeholder="
-                          $t('common.pleaseEnter') + ' ' + $t('setting.bigModel.tiangong.appSecret')
-                        "
-                      />
-                    </a-space>
-                  </a-space>
-                </a-space>
-              </a-tab-pane>
-              <!-- 月之暗面 -->
-              <a-tab-pane key="moonshotAI" :title="$t('setting.bigModel.moonshotAI.name')">
-                <a-space direction="vertical" :size="25" fill class="setting-tab-content">
-                  <a-space direction="vertical" :size="25" fill class="setting-tab-content">
-                    <a-space direction="vertical" :size="10" fill>
-                      <div>{{ $t('common.officialWebsite') }}</div>
-                      <a-link @click="openInBrowser('https://www.moonshot.cn')"
-                        >https://www.moonshot.cn</a-link
-                      >
-                    </a-space>
-                    <a-space direction="vertical" :size="10" fill>
-                      <div>{{ $t('setting.bigModel.moonshotAI.apiKey') }}</div>
-                      <a-input-password
-                        v-model="settingStore.moonshotAI.apiKey"
-                        size="small"
-                        :placeholder="
-                          $t('common.pleaseEnter') + ' ' + $t('setting.bigModel.moonshotAI.apiKey')
-                        "
-                      />
-                    </a-space>
-                  </a-space>
-                </a-space>
-              </a-tab-pane>
-              <!-- 阶跃星辰 -->
-              <a-tab-pane key="stepFun" :title="$t('setting.bigModel.stepFun.name')">
-                <a-space direction="vertical" :size="25" fill class="setting-tab-content">
-                  <a-space direction="vertical" :size="25" fill class="setting-tab-content">
-                    <a-space direction="vertical" :size="10" fill>
-                      <div>{{ $t('common.officialWebsite') }}</div>
-                      <a-link @click="openInBrowser('https://platform.stepfun.com')"
-                        >https://platform.stepfun.com</a-link
-                      >
-                    </a-space>
-                    <a-space direction="vertical" :size="10" fill>
-                      <div>{{ $t('setting.bigModel.stepFun.apiKey') }}</div>
-                      <a-input-password
-                        v-model="settingStore.stepFun.apiKey"
-                        size="small"
-                        :placeholder="
-                          $t('common.pleaseEnter') + ' ' + $t('setting.bigModel.stepFun.apiKey')
-                        "
-                      />
-                    </a-space>
-                  </a-space>
-                </a-space>
-              </a-tab-pane>
-              <!-- DeepSeek -->
-              <a-tab-pane key="deepSeek" :title="$t('setting.bigModel.deepSeek.name')">
-                <a-space direction="vertical" :size="25" fill class="setting-tab-content">
-                  <a-space direction="vertical" :size="25" fill class="setting-tab-content">
-                    <a-space direction="vertical" :size="10" fill>
-                      <div>{{ $t('common.officialWebsite') }}</div>
-                      <a-link @click="openInBrowser('https://platform.deepseek.com')"
-                        >https://platform.deepseek.com</a-link
-                      >
-                    </a-space>
-                    <a-space direction="vertical" :size="10" fill>
-                      <div>{{ $t('setting.bigModel.deepSeek.apiKey') }}</div>
-                      <a-input-password
-                        v-model="settingStore.deepSeek.apiKey"
-                        size="small"
-                        :placeholder="
-                          $t('common.pleaseEnter') + ' ' + $t('setting.bigModel.deepSeek.apiKey')
-                        "
-                      />
-                    </a-space>
-                  </a-space>
-                </a-space>
-              </a-tab-pane>
-            </a-tabs>
-          </a-tab-pane>
-          <!-- AI日历 -->
-          <a-tab-pane key="aiCalendar" :title="$t('setting.aiCalendar.name')">
+          <!-- 外观 -->
+          <a-tab-pane key="appearance" :title="$t('setting.app.appearance.name')">
             <a-space direction="vertical" :size="25" fill class="setting-tab-content">
-              <a-space direction="vertical" :size="10" fill>
-                <div>{{ $t('setting.aiCalendar.weekStart') }}</div>
-                <a-select
-                  v-model="settingStore.aiCalendar.weekStart"
-                  size="small"
-                  :fallback-option="false"
-                >
-                  <a-option :value="0">{{ $t('setting.aiCalendar.sunday') }}</a-option>
-                  <a-option :value="1">{{ $t('setting.aiCalendar.monday') }}</a-option>
-                </a-select>
+              <a-space direction="vertical" :size="10">
+                <div>{{ $t('setting.app.appearance.theme.name') }}</div>
+                <a-radio-group v-model="settingStore.app.themeModel" type="button" size="small">
+                  <a-radio :value="0">
+                    <IconSync />
+                    {{ $t('setting.app.appearance.theme.auto') }}
+                  </a-radio>
+                  <a-radio :value="1">
+                    <IconSun />
+                    {{ $t('setting.app.appearance.theme.light') }}
+                  </a-radio>
+                  <a-radio :value="2">
+                    <IconMoonFill />
+                    {{ $t('setting.app.appearance.theme.dark') }}
+                  </a-radio>
+                </a-radio-group>
+              </a-space>
+              <a-space v-if="settingStore.app.themeModel === 3" direction="vertical" :size="10">
+                <div>{{ $t('setting.app.appearance.theme.customEdit') }}</div>
+                <div class="custom-theme-list">
+                  <div v-for="tk in Object.keys(defaultCustomThemeMap)" :key="tk" class="custom-theme-list-item">
+                    <div class="custom-theme-list-item-label">{{ tk }}</div>
+                    <a-color-picker v-model="settingStore.app.customThemeMap[tk]" size="small"
+                      class="custom-theme-list-item-color-picker" />
+                  </div>
+                </div>
+                <a-button size="mini" @click="settingStore.app.customThemeMap = copyObj(defaultCustomThemeMap)">
+                  <a-space :size="5">
+                    <icon-reply />
+                    <span>{{ $t('setting.app.appearance.theme.customEditReset') }}</span>
+                  </a-space>
+                </a-button>
               </a-space>
               <a-space direction="vertical" :size="10" fill>
-                <div>{{ $t('setting.aiCalendar.bigModel') }}</div>
-                <a-select
-                  v-model="settingStore.aiCalendar.bigModel.provider"
-                  size="small"
-                  :fallback-option="false"
-                >
-                  <a-option v-for="p in Object.keys(chatModels)" :key="p" :value="p">{{
-                    $t(`bigModelProvider.${p}`)
-                  }}</a-option>
-                </a-select>
-                <a-select
-                  v-model="settingStore.aiCalendar.bigModel.model"
-                  size="small"
-                  :fallback-option="false"
-                  allow-create
-                >
-                  <template
-                    v-for="m in chatModels[settingStore.aiCalendar.bigModel.provider]"
-                    :key="m.name"
-                  >
-                    <a-option :value="m.value">{{ m['name'] }}</a-option>
-                  </template>
+                <div>{{ $t('setting.app.appearance.fontSize') }}</div>
+                <a-space :size="10">
+                  <div>{{ $t('setting.app.appearance.min') }}</div>
+                  <a-slider v-model="settingStore.app.fontSize" :min="1" :max="5" show-ticks style="width: 300px" />
+                  <div>{{ $t('setting.app.appearance.max') }}</div>
+                </a-space>
+              </a-space>
+              <a-space direction="vertical" :size="10" fill>
+                <div>{{ $t('setting.app.appearance.local') }}</div>
+                <a-select v-model="settingStore.app.locale" size="small" :fallback-option="false">
+                  <a-option value="zh_CN">中文</a-option>
+                  <a-option value="en_US">English</a-option>
                 </a-select>
               </a-space>
             </a-space>
           </a-tab-pane>
-          <!-- 翻译 -->
-          <a-tab-pane key="translation" :title="$t('setting.translation.name')">
-            <a-tabs position="left">
-              <!-- 有道翻译 -->
-              <a-tab-pane key="youdao" :title="$t('setting.translation.youdao.name')">
-                <a-space direction="vertical" :size="25" fill class="setting-tab-content">
-                  <a-space direction="vertical" :size="10" fill>
-                    <div>{{ $t('common.officialWebsite') }}</div>
-                    <a-link @click="openInBrowser('https://ai.youdao.com')"
-                      >https://ai.youdao.com</a-link
-                    >
-                  </a-space>
-                  <a-space direction="vertical" :size="10" fill>
-                    <div>{{ $t('setting.translation.youdao.appId') }}</div>
-                    <a-input
-                      v-model="settingStore.youdao.appId"
-                      size="small"
-                      :placeholder="
-                        $t('common.pleaseEnter') + ' ' + $t('setting.translation.youdao.appId')
-                      "
-                    />
-                  </a-space>
-                  <a-space direction="vertical" :size="10" fill>
-                    <div>{{ $t('setting.translation.youdao.secret') }}</div>
-                    <a-input-password
-                      v-model="settingStore.youdao.secret"
-                      size="small"
-                      :placeholder="
-                        $t('common.pleaseEnter') + ' ' + $t('setting.translation.youdao.secret')
-                      "
-                    />
-                  </a-space>
-                </a-space>
-              </a-tab-pane>
-              <!-- 百度翻译 -->
-              <a-tab-pane
-                key="baiduTranslation"
-                :title="$t('setting.translation.baiduTranslation.name')"
-              >
-                <a-space direction="vertical" :size="25" fill class="setting-tab-content">
-                  <a-space direction="vertical" :size="10" fill>
-                    <div>{{ $t('common.officialWebsite') }}</div>
-                    <a-link @click="openInBrowser('https://fanyi-api.baidu.com')"
-                      >https://fanyi-api.baidu.com</a-link
-                    >
-                  </a-space>
-                  <a-space direction="vertical" :size="10" fill>
-                    <div>{{ $t('setting.translation.baiduTranslation.appId') }}</div>
-                    <a-input
-                      v-model="settingStore.baiduTranslation.appId"
-                      size="small"
-                      :placeholder="
-                        $t('common.pleaseEnter') +
-                        ' ' +
-                        $t('setting.translation.baiduTranslation.appId')
-                      "
-                    />
-                  </a-space>
-                  <a-space direction="vertical" :size="10" fill>
-                    <div>{{ $t('setting.translation.baiduTranslation.secret') }}</div>
-                    <a-input-password
-                      v-model="settingStore.baiduTranslation.secret"
-                      size="small"
-                      :placeholder="
-                        $t('common.pleaseEnter') +
-                        ' ' +
-                        $t('setting.translation.baiduTranslation.secret')
-                      "
-                    />
-                  </a-space>
-                </a-space>
-              </a-tab-pane>
-            </a-tabs>
-          </a-tab-pane>
-          <!-- 备份 -->
-          <a-tab-pane key="backup" :title="$t('setting.app.backup.name')">
-            <a-space direction="vertical" :size="25" fill class="setting-tab-content">
-              <a-space direction="vertical" :size="10">
-                <div>{{ $t('setting.app.backup.setting.name') }}</div>
-                <div>
-                  <a-space :size="10">
-                    <a-button size="small" @click="exportSettingBackup()">
-                      <a-space :size="5">
-                        <icon-download />
-                        <span>{{ $t('setting.app.backup.setting.export') }}</span>
-                      </a-space>
-                    </a-button>
-                    <a-button size="small" @click="importSettingBackup()">
-                      <a-space :size="5">
-                        <icon-upload />
-                        <span>{{ $t('setting.app.backup.setting.import') }}</span>
-                      </a-space>
-                    </a-button>
-                  </a-space>
-                </div>
-              </a-space>
-              <a-space direction="vertical" :size="10">
-                <div>{{ $t('setting.app.backup.data.name') }}</div>
-                <div>
-                  <a-space :size="10">
-                    <a-button size="small" @click="exportDataBackup()">
-                      <a-space :size="5">
-                        <icon-download />
-                        <span>{{ $t('setting.app.backup.data.export') }}</span>
-                      </a-space>
-                    </a-button>
-                    <a-button size="small" @click="importDataBackup()">
-                      <a-space :size="5">
-                        <icon-upload />
-                        <span>{{ $t('setting.app.backup.data.import') }}</span>
-                      </a-space>
-                    </a-button>
-                  </a-space>
-                </div>
-              </a-space>
-              <!-- 缓存 -->
-              <a-space direction="vertical" :size="10">
-                <div>{{ $t('setting.app.backup.cache.name') }}</div>
-                <div>
-                  <a-space :size="10">
-                    <a-button size="small" @click="openCacheDir()">
-                      <a-space :size="5">
-                        <icon-folder />
-                        <span>{{ $t('setting.app.backup.cache.path') }}</span>
-                      </a-space>
-                    </a-button>
-                    <a-button size="small" :loading="clearCacheFlag" @click="clearCacheHandle()">
-                      <a-space :size="5">
-                        <icon-delete />
-                        <span>{{ $t('setting.app.backup.cache.clear') }}</span>
-                      </a-space>
-                    </a-button>
-                  </a-space>
-                </div>
-              </a-space>
-            </a-space>
-          </a-tab-pane>
+
           <!-- 关于 -->
           <a-tab-pane key="about" :title="$t('setting.about.name')">
             <a-space direction="vertical" :size="25" fill class="setting-tab-content">
@@ -899,15 +353,8 @@ onMounted(() => {
                 <div>
                   <a-space :size="10">
                     <div>{{ $t('setting.about.version.current') }} v{{ appVersion }}</div>
-                    <a-badge
-                      :count="newVersionFlag ? 1 : 0"
-                      dot
-                      :dot-style="{ width: '7px', height: '7px' }"
-                    >
-                      <a-button
-                        size="small"
-                        @click="openInBrowser('https://github.com/classfang/AIHub/releases')"
-                      >
+                    <a-badge :count="newVersionFlag ? 1 : 0" dot :dot-style="{ width: '7px', height: '7px' }">
+                      <a-button size="small" @click="openInBrowser('http://www.sitoai.cn/flickx/')">
                         <a-space :size="5">
                           <icon-download />
                           <span>{{ $t('setting.about.version.download') }}</span>
@@ -918,31 +365,24 @@ onMounted(() => {
                 </div>
               </a-space>
               <a-space direction="vertical" :size="10" fill>
-                <div>{{ $t('setting.about.sourceCode') }}</div>
-                <a-link @click="openInBrowser('https://github.com/classfang/AIHub')"
-                  >https://github.com/classfang/AIHub</a-link
-                >
+                <div>{{ $t('setting.about.companyEmail') }}</div>
+                <a-link href="mailto:fangjunjievip@hotmail.com" style="color: #ef4477;">
+                  pan@sitoai.cn</a-link>
               </a-space>
               <a-space direction="vertical" :size="10" fill>
                 <div>{{ $t('setting.about.contactAuthor') }}</div>
-                <a-link href="mailto:fangjunjievip@hotmail.com">fangjunjievip@hotmail.com</a-link>
+                <a-link><img src="@renderer/assets/images/login-sitoai.png" alt=""></a-link>
               </a-space>
-              <a-space direction="vertical" :size="10">
+              <!-- <a-space direction="vertical" :size="10">
                 <div>{{ $t('setting.about.devTools.name') }}</div>
                 <div>
                   <a-space :size="10">
-                    <a-button size="small" @click="openDevTools()">
-                      <span>{{ $t('setting.about.devTools.openDevTools') }}</span>
-                    </a-button>
-                    <a-button size="small" @click="openLogDir()">
-                      <span>{{ $t('setting.about.devTools.openLogPath') }}</span>
-                    </a-button>
                     <a-button size="small" @click="systemStore.isWelcomeShow = true">
                       <span>{{ $t('setting.about.devTools.welcomePage') }}</span>
                     </a-button>
                   </a-space>
                 </div>
-              </a-space>
+              </a-space> -->
             </a-space>
           </a-tab-pane>
         </a-tabs>
@@ -960,6 +400,21 @@ onMounted(() => {
   :deep(.arco-tabs) {
     height: 100%;
 
+    .arco-radio-button.arco-radio-checked {
+      color: #ef4477
+    }
+
+
+
+    .arco-tabs-tab-active,
+    .arco-tabs-tab-active:hover {
+      color: #ef4477 !important;
+    }
+
+    .arco-tabs-nav-ink {
+      background-color: #ef4477 !important;
+    }
+
     .arco-tabs-tab-title {
       font-size: var(--font-size-default);
     }
@@ -972,7 +427,7 @@ onMounted(() => {
 
         .setting-tab-content {
           height: 100%;
-          overflow-y: auto;
+          overflow-y: hidden;
         }
       }
     }

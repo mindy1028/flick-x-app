@@ -124,7 +124,8 @@ onMounted(() => {
   // 更新主题
   updateTheme()
   // 设置语言
-  locale.value = settingStore.app.locale
+  locale.value = "zh_CN"
+  // locale.value = settingStore.app.locale
   // 刷新 dayKey，用于更具日期自动刷新组件
   systemStore.startDayKeyInterval()
   // 延迟监听加载状态

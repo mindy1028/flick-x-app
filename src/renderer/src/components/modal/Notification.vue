@@ -42,21 +42,11 @@ watch(
       <template #title>{{ $t('notification.name') }}</template>
       <!-- 提醒页 -->
       <div class="notification-page">
-        <a-space
-          v-if="notificationStore.notifications.length > 0"
-          class="notification-list"
-          direction="vertical"
-          :size="10"
-        >
-          <div
-            v-for="n in notificationStore.notifications"
-            :key="n.createTime"
-            @click="clipboardWriteText(n.content)"
-          >
-            <a-tag
-              class="notification-item select-text"
-              :color="n.type === 'error' ? 'red' : n.type === 'warn' ? 'orangered' : 'blue'"
-            >
+        <a-space v-if="notificationStore.notifications.length > 0" class="notification-list" direction="vertical"
+          :size="10">
+          <div v-for="n in notificationStore.notifications" :key="n.createTime" @click="clipboardWriteText(n.content)">
+            <a-tag class="notification-item select-text"
+              :color="n.type === 'error' ? 'red' : n.type === 'warn' ? 'orangered' : 'blue'">
               <div class="notification-title">
                 <div>{{ $t(`notification.type.${n.type}`) }}</div>
                 <div>{{ dayjs(n.createTime).format('YYYY-MM-DD HH:mm:ss') }}</div>
@@ -76,20 +66,10 @@ watch(
       </div>
       <template #footer>
         <div style="display: flex; gap: 10px">
-          <a-button size="small" @click="notificationStore.notifications = []">
+          <a-button size="small" @click="notificationStore.notifications = []" class="tooltip-button">
             <a-space :size="5">
               <icon-delete />
               <span>{{ $t('notification.clear') }}</span>
-            </a-space>
-          </a-button>
-          <a-button
-            style="margin-left: auto"
-            size="small"
-            @click="openInBrowser('https://github.com/classfang/AIHub/issues/new')"
-          >
-            <a-space :size="5">
-              <icon-bug />
-              <span>{{ $t('notification.issues') }}</span>
             </a-space>
           </a-button>
         </div>
@@ -99,6 +79,11 @@ watch(
 </template>
 
 <style lang="less" scoped>
+.tooltip-button:hover {
+  background-color: #ef4477 !important;
+  color: #fff !important;
+}
+
 .notification-page {
   height: 60vh;
   overflow-y: auto;

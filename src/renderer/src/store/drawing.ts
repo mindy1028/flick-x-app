@@ -12,8 +12,8 @@ export const useDrawingStore = defineStore({
       if (this.drawingTaskList.length === 0) {
         this.drawingTaskList.push({
           id: randomUUID(),
-          provider: 'OpenAI',
-          model: 'dall-e-3',
+          provider: 'FlickX',
+          model: 'moonshot-v1-8k',
           imageList: [],
           prompt: '',
           options: { size: '1024x1024', style: 'vivid', quality: 'standard' }

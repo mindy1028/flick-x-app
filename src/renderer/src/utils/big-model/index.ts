@@ -72,29 +72,15 @@ export interface CommonSpeechOption {
 }
 
 const chatFunctionMap: ChatFunctionMap = {
-  OpenAI: chat2openai,
-  Ollama: chat2ollama,
-  Gemini: chat2gemini,
-  ZhipuAI: chat2zhipu,
-  Spark: chat2spark,
-  ERNIE: chat2ernie,
-  Tongyi: chat2tongyi,
-  Tiangong: chat2tiangong,
-  MoonshotAI: chat2moonshot,
-  StepFun: chat2step,
-  DeepSeek: chat2deepSeek
+  FlickX: chat2openai
 }
 
 const drawingFunctionMap: DrawingFunctionMap = {
-  OpenAI: drawingByOpenAI,
-  ZhipuAI: drawingByZhipu,
-  Tongyi: drawingByTongyi,
-  ERNIE: drawingByERNIE,
-  Spark: drawingBySpark
+  FlickX: drawingByOpenAI
 }
 
 const speechFunctionMap: SpeechFunctionMap = {
-  OpenAI: speechByOpenAI
+  FlickX: speechByOpenAI
 }
 
 export const chat2bigModel = async (provider: keyof ChatFunctionMap, option: CommonChatOption) => {

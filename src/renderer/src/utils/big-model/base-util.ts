@@ -12,8 +12,8 @@ export const defaultAssistant = {
   name: '',
   type: 'chat',
   instruction: '',
-  provider: 'OpenAI',
-  model: 'gpt-4-turbo',
+  provider: 'FlickX',
+  model: 'moonshot-v1-8k',
   maxTokens: 2048,
   inputMaxTokens: 2048,
   contextSize: 1,
@@ -130,5 +130,5 @@ export const isSupportNetwork = (providerName: string, modelName: string) => {
 }
 
 export const isSupportSpeech = (providerName: BigModelProvider) => {
-  return providerName === 'OpenAI'
+  return providerName === 'FlickX'
 }

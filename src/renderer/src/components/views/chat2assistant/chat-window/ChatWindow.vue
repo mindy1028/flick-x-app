@@ -202,6 +202,7 @@ const sendQuestion = async (event?: KeyboardEvent) => {
 // 使用大模型
 const useBigModel = async () => {
   // 检查大模型配置
+  console.log(data.currentAssistant.provider)
   if (settingStore.checkBigModelConfig(data.currentAssistant.provider)) {
     Modal.confirm({
       title: t('common.configError'),
@@ -214,14 +215,7 @@ const useBigModel = async () => {
     })
     return
   }
-
-  // 模型特有错误检查
-  if (data.currentAssistant.model === 'gemini-pro-vision') {
-    if (!data.selectImageList[0]) {
-      Message.error(t('chatWindow.error.imageRequires'))
-      return
-    }
-  }
+  console.log(218)
 
   // 开启等待
   systemStore.chatWindowLoading = true
@@ -333,11 +327,13 @@ const useBigModel = async () => {
   // 各家大模型特有选项
   const otherOption = settingStore.getBigModelConfig(data.currentAssistant.provider)
 
+  console.log(330)
   // 大模型能力调用
   await chat2bigModel(data.currentAssistant.provider, {
     ...chat2bigModelOption,
     ...otherOption
   })
+  console.log(336)
 }
 
 // 手动结束回答
@@ -360,7 +356,7 @@ const selectImageRequest = (option: RequestOption) => {
   onSuccess()
 
   return {
-    abort: () => {}
+    abort: () => { }
   }
 }
 
@@ -432,8 +428,8 @@ const calcToBottomShow = () => {
   // 滚动超过一定高度时，显示置底按钮
   data.isToBottomBtnShow =
     chatMessageListScrollbarRef.value.containerRef.scrollHeight -
-      chatMessageListScrollbarRef.value.containerRef.clientHeight -
-      chatMessageListScrollbarRef.value.containerRef.scrollTop >
+    chatMessageListScrollbarRef.value.containerRef.clientHeight -
+    chatMessageListScrollbarRef.value.containerRef.scrollTop >
     50
 }
 
@@ -468,8 +464,8 @@ const startSpeech = async (content?: string) => {
   data.speechStatus = SpeechStatus.LOADING
   try {
     const audioData = await speechByBigModel(data.currentAssistant.provider as AIAudioProvider, {
-      apiKey: settingStore.openAI.key,
-      baseURL: settingStore.openAI.baseUrl,
+      apiKey: settingStore.FlickX.key,
+      baseURL: settingStore.FlickX.baseUrl,
       model: data.currentAssistant.speechModel,
       voice: data.currentAssistant.speechVoice,
       speed: data.currentAssistant.speechSpeed,
@@ -613,100 +609,59 @@ onBeforeUnmount(() => {
 <template>
   <div class="chat-window">
     <!-- 头部 -->
-    <ChatWindowHeader
-      ref="chatWindowHeaderRef"
-      :is-virtual="isVirtual"
-      :current-assistant="currentAssistant"
-    />
+    <ChatWindowHeader ref="chatWindowHeaderRef" :is-virtual="isVirtual" :current-assistant="currentAssistant" />
 
     <!-- 消息列表滚动 -->
-    <a-scrollbar
-      ref="chatMessageListScrollbarRef"
-      outer-class="chat-message-list-container arco-scrollbar-small"
-      style="height: calc(100vh - 158px - 55px); overflow-y: auto"
-      @scroll="onChatMessageListScroll"
-    >
+    <a-scrollbar ref="chatMessageListScrollbarRef" outer-class="chat-message-list-container arco-scrollbar-small"
+      style="height: calc(100vh - 158px - 55px); overflow-y: auto" @scroll="onChatMessageListScroll">
       <!-- 对话欢迎窗口 -->
-      <ChatWindowWelcome
-        v-if="isVirtual && currentAssistant.chatMessageList.length === 0"
-        :assistant="currentAssistant"
-      />
+      <ChatWindowWelcome v-if="isVirtual && currentAssistant.chatMessageList.length === 0"
+        :assistant="currentAssistant" />
 
       <!-- 消息列表-->
       <div v-else class="chat-message-list fade-in-from" :class="{ 'fade-in-to': isLoad }">
         <!-- 加载更多 -->
-        <a-button
-          v-if="currentAssistant.chatMessageList.length - page.number * page.size > 0"
-          style="background-color: transparent"
-          type="text"
-          size="mini"
-          @click="chatMessageLoadMore(chatMessageListPageData[0].id)"
-          >{{ $t('common.loadMore') }}
+        <a-button v-if="currentAssistant.chatMessageList.length - page.number * page.size > 0"
+          style="background-color: transparent" type="text" size="mini"
+          @click="chatMessageLoadMore(chatMessageListPageData[0].id)">{{ $t('common.loadMore') }}
         </a-button>
 
         <!-- 消息体 -->
         <template v-for="(msg, index) in chatMessageListPageData" :key="msg.id">
-          <div
-            v-if="calcMessageTime(msg, index === 0)"
-            :key="`chat-message-time-${msg.id}-${systemStore.dayKey}`"
-            class="chat-message-time"
-          >
+          <div v-if="calcMessageTime(msg, index === 0)" :key="`chat-message-time-${msg.id}-${systemStore.dayKey}`"
+            class="chat-message-time">
             {{ calcMessageTime(msg, index === 0) }}
           </div>
           <!-- 右键点击菜单 -->
           <a-dropdown :align-point="true" trigger="contextMenu">
             <!-- 消息块 -->
-            <div
-              :id="`chat-message-${msg.id}`"
-              class="chat-message"
-              :class="{ 'chat-message-user': msg.role === 'user' }"
-            >
+            <div :id="`chat-message-${msg.id}`" class="chat-message"
+              :class="{ 'chat-message-user': msg.role === 'user' }">
               <!-- 多选框 -->
-              <a-checkbox
-                v-if="multipleChoiceFlag"
-                class="chat-message-checkbox"
-                :default-checked="multipleChoiceList.includes(msg.id)"
-                @change="multipleChoiceChange(msg.id)"
-              />
+              <a-checkbox v-if="multipleChoiceFlag" class="chat-message-checkbox"
+                :default-checked="multipleChoiceList.includes(msg.id)" @change="multipleChoiceChange(msg.id)" />
               <!-- 消息头像 -->
               <div class="chat-message-avatar">
                 <UserAvatar v-if="msg.role === 'user'" :size="30" />
-                <AssistantAvatar
-                  v-else-if="msg.role === 'assistant'"
-                  :provider="currentAssistant.provider"
-                  :size="30"
-                />
+                <AssistantAvatar v-else-if="msg.role === 'assistant'" 
+                  :size="30" />
               </div>
               <!-- 消息内容 -->
               <div class="chat-message-content select-text">
                 <!-- 用户消息：文本内容 -->
                 <div v-if="msg.role === 'user'">{{ msg.content }}</div>
                 <!-- 大模型消息：markdown 内容 -->
-                <div
-                  v-else-if="msg.role === 'assistant'"
-                  class="chat-message-md"
-                  v-html="
-                    renderMarkdown(
-                      msg.content,
-                      index === chatMessageListPageData.length - 1 && systemStore.chatWindowLoading
-                    )
-                  "
-                ></div>
+                <div v-else-if="msg.role === 'assistant'" class="chat-message-md" v-html="renderMarkdown(
+                  msg.content,
+                  index === chatMessageListPageData.length - 1 && systemStore.chatWindowLoading
+                )
+                  "></div>
                 <!-- 消息内容携带的图片 -->
-                <a-image
-                  v-if="msg.image"
-                  class="chat-message-img"
-                  width="300"
-                  height="300"
-                  :src="`file://${msg.image}`"
-                  show-loader
-                  fit="cover"
-                >
+                <a-image v-if="msg.image" class="chat-message-img" width="300" height="300" :src="`file://${msg.image}`"
+                  show-loader fit="cover">
                   <template #preview-actions>
-                    <a-image-preview-action
-                      :name="$t('common.download')"
-                      @click="downloadFile(`file://${msg.image}`, `img-${msg.id}.png`)"
-                    >
+                    <a-image-preview-action :name="$t('common.download')"
+                      @click="downloadFile(`file://${msg.image}`, `img-${msg.id}.png`)">
                       <icon-download />
                     </a-image-preview-action>
                   </template>
@@ -719,34 +674,27 @@ onBeforeUnmount(() => {
             </div>
             <!-- 右键菜单内容 -->
             <template #content>
-              <a-doption @click="clipboardWriteText(getSelectedText(msg.content))"
-                >{{ $t('chatWindow.copy') }}
+              <a-doption @click="clipboardWriteText(getSelectedText(msg.content))">{{ $t('chatWindow.copy') }}
               </a-doption>
-              <a-doption
-                v-if="isSupportSpeechComputed"
-                @click="startSpeech(getSelectedText(msg.content))"
-                >{{ $t('chatWindow.speech') }}
+              <a-doption v-if="isSupportSpeechComputed" @click="startSpeech(getSelectedText(msg.content))">{{
+                $t('chatWindow.speech') }}
               </a-doption>
-              <a-doption @click="multipleChoiceOpen(msg.id)"
-                >{{ $t('chatWindow.multipleChoice') }}
+              <a-doption @click="multipleChoiceOpen(msg.id)">{{ $t('chatWindow.multipleChoice') }}
               </a-doption>
             </template>
           </a-dropdown>
           <!-- 清空上下文提示 -->
           <transition name="fadein">
-            <a-divider
-              v-if="currentAssistant.clearContextMessageId === msg.id"
-              class="chat-message-clear-context"
-              orientation="center"
-              @click="currentAssistant.clearContextMessageId = null"
-              >{{ $t('chatWindow.clearContextTip') }}
+            <a-divider v-if="currentAssistant.clearContextMessageId === msg.id" class="chat-message-clear-context"
+              orientation="center" @click="currentAssistant.clearContextMessageId = null">{{
+                $t('chatWindow.clearContextTip') }}
             </a-divider>
           </transition>
         </template>
         <!-- 等待回答占位显示 -->
         <div v-if="waitAnswer" class="chat-message">
           <div class="chat-message-avatar">
-            <AssistantAvatar :provider="currentAssistant.provider" :size="30" />
+            <AssistantAvatar :size="30" />
           </div>
           <div class="chat-message-content">
             <a-spin :size="15" />
@@ -758,94 +706,59 @@ onBeforeUnmount(() => {
     <!-- 输入框区域 -->
     <div class="chat-input-container">
       <!-- 回到底部 -->
-      <div
-        v-if="isToBottomBtnShow"
-        class="chat-message-list-to-bottom"
-        @click="scrollToBottom(false)"
-      >
+      <div v-if="isToBottomBtnShow" class="chat-message-list-to-bottom" @click="scrollToBottom(false)">
         <icon-arrow-down class="chat-message-list-to-bottom-icon" />
       </div>
       <!-- 工具栏 -->
       <div class="chat-input-tools">
         <!-- 打开设置 -->
-        <a-tooltip
-          :content="isVirtual ? $t('chatWindow.header.editChat') : $t('chatWindow.header.edit')"
-          position="top"
-          mini
-          :content-style="{ fontSize: 'var(--font-size-xs)' }"
-        >
-          <a-button size="mini" shape="round" @click="chatWindowHeaderRef.edit()">
+        <a-tooltip :content="isVirtual ? $t('chatWindow.header.editChat') : $t('chatWindow.header.edit')" position="top"
+          mini :content-style="{ fontSize: 'var(--font-size-xs)' }">
+          <a-button size="mini" shape="round" @click="chatWindowHeaderRef.edit()" class="tooltip-button">
             <icon-settings :size="15" />
           </a-button>
         </a-tooltip>
 
         <!-- 清空上下文 -->
-        <a-tooltip
-          :content="$t('chatWindow.clearContext')"
-          position="top"
-          mini
-          :content-style="{ fontSize: 'var(--font-size-xs)' }"
-        >
-          <a-button size="mini" shape="round" @click="clearContext()">
+        <a-tooltip :content="$t('chatWindow.clearContext')" position="top" mini
+          :content-style="{ fontSize: 'var(--font-size-xs)' }">
+          <a-button size="mini" shape="round" @click="clearContext()" class="tooltip-button">
             <icon-eraser :size="15" />
           </a-button>
         </a-tooltip>
 
         <!-- 清空记录 -->
-        <a-tooltip
-          :content="$t('chatWindow.header.clear')"
-          position="top"
-          mini
-          :content-style="{ fontSize: 'var(--font-size-xs)' }"
-        >
-          <a-button size="mini" shape="round" @click="chatWindowHeaderRef.clearConfirm()">
+        <a-tooltip :content="$t('chatWindow.header.clear')" position="top" mini
+          :content-style="{ fontSize: 'var(--font-size-xs)' }">
+          <a-button size="mini" shape="round" @click="chatWindowHeaderRef.clearConfirm()" class="tooltip-button">
             <icon-delete :size="15" />
           </a-button>
         </a-tooltip>
 
         <!-- 打开多选菜单 -->
-        <a-tooltip
-          :content="$t('chatWindow.multipleChoice')"
-          position="top"
-          mini
-          :content-style="{ fontSize: 'var(--font-size-xs)' }"
-        >
-          <a-button size="mini" shape="round" @click="multipleChoiceOpen()">
+        <a-tooltip :content="$t('chatWindow.multipleChoice')" position="top" mini
+          :content-style="{ fontSize: 'var(--font-size-xs)' }">
+          <a-button size="mini" shape="round" @click="multipleChoiceOpen()" class="tooltip-button">
             <icon-select-all :size="15" />
           </a-button>
         </a-tooltip>
 
         <!-- 快捷指令 -->
-        <a-tooltip
-          v-if="isVirtual"
-          :content="$t('chatWindow.fastPrompt')"
-          position="top"
-          mini
-          :content-style="{ fontSize: 'var(--font-size-xs)' }"
-        >
-          <a-button size="mini" shape="round" @click="promptListModalVisible = true">
+        <a-tooltip v-if="isVirtual" :content="$t('chatWindow.fastPrompt')" position="top" mini
+          :content-style="{ fontSize: 'var(--font-size-xs)' }">
+          <a-button size="mini" shape="round" @click="promptListModalVisible = true" class="tooltip-button">
             <icon-bulb :size="15" />
           </a-button>
         </a-tooltip>
 
         <!-- 选择图片 -->
         <div v-if="isSupportImageComputed" class="chat-input-select-image">
-          <a-upload
-            :file-list="selectImageList"
-            :limit="1"
-            :on-button-click="selectImageClick"
-            :custom-request="selectImageRequest"
-            accept="image/*"
-            :show-file-list="false"
-          >
+          <a-upload :file-list="selectImageList" :limit="1" :on-button-click="selectImageClick"
+            :custom-request="selectImageRequest" accept="image/*" :show-file-list="false">
             <template #upload-button>
-              <a-tooltip
-                :content="$t('chatWindow.selectImage')"
-                position="top"
-                mini
-                :content-style="{ fontSize: 'var(--font-size-xs)' }"
-              >
-                <a-button size="mini" shape="round">
+              <a-tooltip :content="$t('chatWindow.selectImage')" position="top" mini
+                :content-style="{ fontSize: 'var(--font-size-xs)' }">
+                <a-button size="mini" shape="round" class="tooltip-button">
                   <icon-image :size="15" />
                 </a-button>
               </a-tooltip>
@@ -854,52 +767,30 @@ onBeforeUnmount(() => {
         </div>
 
         <!-- 选择文档 -->
-        <a-tooltip
-          :content="$t('chatWindow.selectFile')"
-          position="top"
-          mini
-          :content-style="{ fontSize: 'var(--font-size-xs)' }"
-        >
-          <a-button
-            size="mini"
-            :type="selectFileList.length > 0 ? 'primary' : undefined"
-            shape="round"
-            @click="fileListModalVisible = true"
-          >
+        <a-tooltip :content="$t('chatWindow.selectFile')" position="top" mini
+          :content-style="{ fontSize: 'var(--font-size-xs)' }">
+          <a-button size="mini" :type="selectFileList.length > 0 ? 'primary' : undefined" shape="round"
+            @click="fileListModalVisible = true" class="tooltip-button">
             <icon-file :size="15" />
           </a-button>
         </a-tooltip>
 
         <!-- 选择插件 -->
         <a-popover position="tl" trigger="click">
-          <a-tooltip
-            v-if="isSupportPluginComputed"
-            :content="$t('chatWindow.selectPlugin')"
-            position="top"
-            mini
-            :content-style="{ fontSize: 'var(--font-size-xs)' }"
-          >
-            <a-button
-              size="mini"
-              :type="
-                chatPluginStore.getPluginListByIds(currentAssistant.chatPluginIdList).length > 0
-                  ? 'primary'
-                  : undefined
-              "
-              shape="round"
-            >
+          <a-tooltip v-if="isSupportPluginComputed" :content="$t('chatWindow.selectPlugin')" position="top" mini
+            :content-style="{ fontSize: 'var(--font-size-xs)' }">
+            <a-button size="mini" :type="chatPluginStore.getPluginListByIds(currentAssistant.chatPluginIdList).length > 0
+                ? 'primary'
+                : undefined
+              " shape="round" class="tooltip-button">
               <icon-experiment :size="15" />
             </a-button>
           </a-tooltip>
           <template #content>
             <div class="chat-plugin-select">
-              <a-checkbox-group
-                v-if="chatPluginStore.chatPluginList.length > 0"
-                v-model="currentAssistant.chatPluginIdList"
-                direction="vertical"
-              >
-                <a-checkbox v-for="p in chatPluginStore.chatPluginList" :key="p.id" :value="p.id"
-                  >{{ p.name }}
+              <a-checkbox-group v-if="chatPluginStore.chatPluginList.length > 0"
+                v-model="currentAssistant.chatPluginIdList" direction="vertical">
+                <a-checkbox v-for="p in chatPluginStore.chatPluginList" :key="p.id" :value="p.id">{{ p.name }}
                 </a-checkbox>
               </a-checkbox-group>
               <a-empty v-else>
@@ -909,89 +800,43 @@ onBeforeUnmount(() => {
             </div>
           </template>
         </a-popover>
-
-        <!-- 发音开始/停止 -->
-        <a-tooltip
-          v-if="isSupportSpeech(currentAssistant.provider)"
-          :content="$t('chatWindow.startSpeech')"
-          position="tr"
-          mini
-          :content-style="{ fontSize: '12px' }"
-        >
-          <a-button
-            v-if="speechStatus === SpeechStatus.STOP"
-            size="mini"
-            shape="round"
-            style="margin-left: auto"
-            @click="startSpeech(currentAssistant.chatMessageList.at(-1)?.content)"
-          >
-            <icon-sound :size="15" />
-          </a-button>
-          <a-button
-            v-else
-            size="mini"
-            shape="round"
-            status="danger"
-            style="margin-left: auto"
-            @click="stopSpeech()"
-          >
-            <icon-loading v-if="speechStatus === SpeechStatus.LOADING" spin :size="15" />
-            <icon-record-stop v-else :size="15" />
-          </a-button>
-        </a-tooltip>
       </div>
       <div class="chat-input">
         <transition name="fadein">
           <div v-if="selectImageList.length > 0" class="chat-input-image">
-            <a-image
-              width="80"
-              height="80"
-              :src="`file://${selectImageList[0].file?.path}`"
-              preview
-              show-loader
-              fit="cover"
-            />
-            <a-button
-              class="chat-input-image-delete-btn"
-              shape="circle"
-              size="mini"
-              status="danger"
-              @click="selectImageList = []"
-            >
+            <a-image width="80" height="80" :src="`file://${selectImageList[0].file?.path}`" preview show-loader
+              fit="cover" />
+            <a-button class="chat-input-image-delete-btn" shape="circle" size="mini" status="danger"
+              @click="selectImageList = []">
               <icon-delete />
             </a-button>
           </div>
         </transition>
 
         <!-- 文本域 -->
-        <a-textarea
-          ref="chatInputTextareaRef"
-          v-model="question"
-          class="chat-input-textarea"
-          :placeholder="$t('chatWindow.inputPlaceholder.' + currentAssistant.type)"
-          :auto-size="{
+        <a-textarea ref="chatInputTextareaRef" v-model="question" class="chat-input-textarea"
+          :placeholder="$t('chatWindow.inputPlaceholder.' + currentAssistant.type)" :auto-size="{
             minRows: 4,
             maxRows: 4
-          }"
-          allow-clear
-          @keydown.enter="sendQuestion"
-          @paste="handleInputPaste"
-        />
+          }" allow-clear @keydown.enter="sendQuestion" @paste="handleInputPaste" />
 
         <!-- 输入框按钮区域 -->
         <div class="chat-input-button">
           <!-- 发送消息按钮 -->
-          <a-button
-            v-if="!systemStore.chatWindowLoading"
-            type="primary"
-            size="small"
-            @click="sendQuestion()"
-          >
-            <a-space :size="5">
-              <icon-send :size="15" />
-              <span>{{ $t('chatWindow.send') }}</span>
-            </a-space>
-          </a-button>
+          <button v-if="!systemStore.chatWindowLoading" @click="sendQuestion()">
+            <div class="svg-wrapper-1">
+              <div class="svg-wrapper">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16">
+                  <path fill="none" d="M0 0h24v24H0z"></path>
+                  <path fill="currentColor"
+                    d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z">
+                  </path>
+                </svg>
+              </div>
+            </div>
+            <span>{{ $t('chatWindow.send') }}</span>
+          </button>
+
           <!-- 停止回答按钮 -->
           <a-button v-if="systemStore.chatWindowLoading" size="small" @click="stopAnswer()">
             <a-space :size="5">
@@ -1003,13 +848,8 @@ onBeforeUnmount(() => {
 
         <!-- 底部多选操作区域 -->
         <transition name="slide2top">
-          <MultipleChoiceConsole
-            v-if="multipleChoiceFlag"
-            :current-assistant="currentAssistant"
-            :multiple-choice-list="multipleChoiceList"
-            :is-virtual="isVirtual"
-            @close="multipleChoiceClose()"
-          />
+          <MultipleChoiceConsole v-if="multipleChoiceFlag" :current-assistant="currentAssistant"
+            :multiple-choice-list="multipleChoiceList" :is-virtual="isVirtual" @close="multipleChoiceClose()" />
         </transition>
       </div>
     </div>
@@ -1018,10 +858,7 @@ onBeforeUnmount(() => {
     <PromptList v-model:modal-visible="promptListModalVisible" @select-prompt="selectPrompt" />
 
     <!-- 文件列表modal -->
-    <ChatWindowFileList
-      v-model:modal-visible="fileListModalVisible"
-      v-model:select-file-list="selectFileList"
-    />
+    <ChatWindowFileList v-model:modal-visible="fileListModalVisible" v-model:select-file-list="selectFileList" />
   </div>
 </template>
 
@@ -1032,5 +869,10 @@ onBeforeUnmount(() => {
   max-height: 40vh;
   overflow-y: auto;
   padding: 0 5px;
+}
+
+.chat-input-tools .tooltip-button:hover {
+  background-color: #ef4477 !important;
+  color: #fff !important;
 }
 </style>

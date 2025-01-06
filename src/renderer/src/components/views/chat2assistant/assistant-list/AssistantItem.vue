@@ -120,7 +120,7 @@ watch(
       </div>
     </div>
     <template v-else>
-      <AssistantAvatar :provider="assistant.provider" :size="35" class="assistant-item-avatar" />
+      <AssistantAvatar :size="35" class="assistant-item-avatar" />
       <div class="assistant-item-body">
         <div class="assistant-item-header">
           <div class="assistant-item-name">{{ assistant.name }}</div>
@@ -243,7 +243,8 @@ watch(
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      color: var(--color-text-3);
+      color: #fff;
+      // color: var(--color-text-3);
     }
   }
 

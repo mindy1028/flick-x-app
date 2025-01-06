@@ -176,7 +176,7 @@ export const initLangChain = () => {
 
       // 对话模型
       const model = new OpenAI({
-        modelName: 'gpt-3.5-turbo',
+        modelName: 'moonshot-v1-8k',
         openAIApiKey: openaiConfig.key,
         configuration: {
           baseURL: openaiConfig.baseUrl

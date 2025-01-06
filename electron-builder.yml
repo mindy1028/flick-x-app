@@ -1,5 +1,5 @@
-appId: cn.junki.app
-productName: Flick-X
+appId: cn.sitoai.app
+productName: FlickX
 directories:
   buildResources: build
 files:
@@ -13,7 +13,7 @@ files:
 asarUnpack:
   - resources/**
 win:
-  executableName: Flick-X
+  executableName: FlickX
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
@@ -34,13 +34,13 @@ linux:
     - AppImage
     - snap
     - deb
-  maintainer: junki.cn
+  maintainer: sitoai.cn
   category: Utility
 appImage:
   artifactName: ${name}-${version}.${ext}
 npmRebuild: false
 publish:
   provider: github
-  owner: classfang
-  repo: Flick-X
+  owner: sitoai
+  repo: FlickX
   private: true

@@ -1,7 +1,7 @@
 {
   "name": "flick-x",
-  "version": "1.8.10",
-  "description": "An Electron application for AI",
+  "version": "0.0.8",
+  "description": "视途科技Agent应用程序客户端",
   "main": "./out/main/index.mjs",
   "engines": {
     "node": ">=21.1.0"
@@ -25,12 +25,14 @@
     "@electron-toolkit/utils": "^3.0.0",
     "@langchain/community": "^0.2.5",
     "@langchain/redis": "^0.0.5",
+    "axios-retry": "^4.5.0",
     "electron-store": "^9.0.0",
     "langchain": "^0.2.4",
     "mammoth": "^1.7.2",
     "officeparser": "^4.1.1",
     "pdf-parse": "^1.1.1",
     "redis": "^4.6.14",
+    "typescript": "^5.7.2",
     "winston": "^3.13.0",
     "winston-daily-rotate-file": "^5.0.0"
   },

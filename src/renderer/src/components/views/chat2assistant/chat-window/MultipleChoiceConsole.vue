@@ -196,7 +196,6 @@ const shareModalBeforeOk = async () => {
               <UserAvatar v-if="msg.role === 'user'" :size="30" />
               <AssistantAvatar
                 v-else-if="msg.role === 'assistant'"
-                :provider="currentAssistant.provider"
                 :size="30"
               />
             </div>

@@ -42,51 +42,32 @@ const selectImageRequest = (option: RequestOption) => {
   }
 
   return {
-    abort: () => {}
+    abort: () => { }
   }
 }
 </script>
 
 <template>
-  <a-avatar
-    class="user-avatar"
-    shape="square"
-    :size="size"
-    @click="modalVisible = !systemStore.chatWindowLoading && editable"
-  >
+  <a-avatar class="user-avatar" shape="square" :size="size"
+    @click="modalVisible = !systemStore.chatWindowLoading && editable">
     <img v-if="userStore.avatar" class="no-drag-area" :src="'file://' + userStore.avatar" alt="" />
   </a-avatar>
   <!-- 用户设置Modal -->
-  <a-modal
-    v-model:visible="modalVisible"
-    :footer="false"
-    unmount-on-close
-    title-align="start"
-    width="350px"
-  >
+  <a-modal v-model:visible="modalVisible" :footer="false" unmount-on-close title-align="start" width="350px">
     <template #title> {{ $t('userSetting.name') }} </template>
-    <div
-      style="
+    <div style="
         height: 200px;
         overflow-y: auto;
         display: flex;
         flex-direction: column;
         align-items: center;
         gap: 15px;
-      "
-    >
-      <a-upload
-        :file-list="avatarFile ? [avatarFile] : []"
-        :show-file-list="false"
-        :custom-request="selectImageRequest"
-        accept="image/*"
-      >
+      ">
+      <a-upload :file-list="avatarFile ? [avatarFile] : []" :show-file-list="false" :custom-request="selectImageRequest"
+        accept="image/*">
         <template #upload-button>
           <div class="arco-upload-list-item">
-            <div
-              v-if="avatarFile && avatarFile.url"
-              class="arco-upload-list-picture custom-upload-avatar"
-            >
+            <div v-if="avatarFile && avatarFile.url" class="arco-upload-list-picture custom-upload-avatar">
               <img :src="'file://' + avatarFile.url" alt="" />
               <div class="arco-upload-list-picture-mask">
                 <IconEdit />

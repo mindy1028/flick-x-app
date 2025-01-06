@@ -67,7 +67,7 @@ const sendQuestion = () => {
     return
   }
 
-  if (!settingStore.openAI.baseUrl || !settingStore.openAI.key) {
+  if (!settingStore.FlickX.baseUrl || !settingStore.FlickX.key) {
     Modal.confirm({
       title: t('common.configError'),
       content: t(`chatWindow.configMiss.OpenAI`),
@@ -83,7 +83,7 @@ const sendQuestion = () => {
   systemStore.knowledgeBaseWindowLoading = true
   langChainRedisQuestion(
     knowledgeBaseStore.getCurrentKnowledgeBase.redisConfig,
-    settingStore.openAI,
+    settingStore.FlickX,
     knowledgeBaseStore.getCurrentKnowledgeBase.indexName,
     data.currentQuestion
   )
@@ -124,7 +124,7 @@ const handleNewFileModalBeforeOk = async () => {
       return
     }
 
-    if (!settingStore.openAI.baseUrl || !settingStore.openAI.key) {
+    if (!settingStore.FlickX.baseUrl || !settingStore.FlickX.key) {
       Modal.confirm({
         title: t('common.configError'),
         content: t(`chatWindow.configMiss.OpenAI`),
@@ -141,7 +141,7 @@ const handleNewFileModalBeforeOk = async () => {
     systemStore.knowledgeBaseWindowLoading = true
     langChainRedisAddFile(
       knowledgeBaseStore.getCurrentKnowledgeBase.redisConfig,
-      settingStore.openAI,
+      settingStore.FlickX,
       knowledgeBaseStore.getCurrentKnowledgeBase.indexName,
       data.newFileForm.text
     )
@@ -176,7 +176,7 @@ const updateFile = () => {
       // 再指定key新增
       langChainRedisAddFile(
         knowledgeBaseStore.getCurrentKnowledgeBase.redisConfig,
-        settingStore.openAI,
+        settingStore.FlickX,
         knowledgeBaseStore.getCurrentKnowledgeBase.indexName,
         data.fileDetail.text
       )
@@ -616,7 +616,8 @@ watchEffect(() => {
 
       .search-input-send-btn-active {
         stroke-width: 6;
-        color: rgb(var(--primary-6));
+            // color: rgb(var(--primary-6));
+            color: #ef4477;
       }
     }
   }

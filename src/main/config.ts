@@ -2,7 +2,7 @@ import { app } from 'electron'
 import { join } from 'path'
 
 export const appConfig = {
-  appUserModelId: 'cn.junki',
+  appUserModelId: 'cn.sitoai',
   logsPath: join(app.getPath('userData'), 'logs'),
   tempPath: join(app.getPath('userData'), 'temp')
 }

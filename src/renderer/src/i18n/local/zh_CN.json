@@ -83,50 +83,9 @@
     "bigModel": {
       "name": "大模型",
       "openAI": {
-        "name": "OpenAI",
-        "baseUrl": "服务地址",
-        "key": "OpenAI Key"
-      },
-      "ollama": {
-        "name": "Ollama",
-        "baseUrl": "服务地址"
-      },
-      "gemini": {
-        "name": "Gemini",
-        "baseUrl": "服务地址",
-        "key": "Gemini Key"
-      },
-      "zhipuAI": {
-        "name": "智谱AI",
-        "apiKey": "API Key"
-      },
-      "spark": {
-        "name": "讯飞星火",
-        "appId": "APPID",
-        "secret": "APISecret",
-        "key": "APIKey"
-      },
-      "ernie": {
-        "name": "百度文心",
-        "apiKey": "API Key",
-        "secretKey": "Secret Key"
-      },
-      "tongyi": {
-        "name": "阿里通义",
-        "apiKey": "API Key"
-      },
-      "tiangong": {
-        "name": "天工",
-        "appKey": "app_key",
-        "appSecret": "app_secret"
-      },
-      "moonshotAI": {
-        "name": "月之暗面",
-        "apiKey": "API Key"
-      },
-      "stepFun": {
-        "name": "阶跃星辰",
-        "apiKey": "API Key"
+        "name": "FlickX",
+        "baseUrl": "https://api.moonshot.cn/v1",
+        "key": "k-qJXDeHh2n1UFNeCFdam7dhWvYq75SXTXfM4roHIR4XeNzG1H"
       },
       "deepSeek": {
         "name": "DeepSeek",
@@ -155,8 +114,8 @@
     },
     "about": {
       "name": "关于",
-      "sourceCode": "源码地址",
-      "contactAuthor": "联系作者",
+      "companyEmail": "联系我们",
+      "contactAuthor": "关注视途",
       "version": {
         "name": "应用版本",
         "current": "当前版本",
@@ -178,31 +137,8 @@
     "selectAvatar": "选择",
     "nickname": "昵称"
   },
-  "bigModelProvider": {
-    "OpenAI": "OpenAI",
-    "Ollama": "Ollama",
-    "Gemini": "Gemini",
-    "ZhipuAI": "智谱AI",
-    "Spark": "讯飞星火",
-    "ERNIE": "百度文心",
-    "Tongyi": "阿里通义",
-    "Tiangong": "天工",
-    "MoonshotAI": "月之暗面",
-    "StepFun": "阶跃星辰",
-    "DeepSeek": "DeepSeek"
-  },
   "bigModelProviderWelcome": {
-    "OpenAI": "我_是_ Open_AI _大_模_型，_请_问_有_什_么_可_以_帮_你_？",
-    "Ollama": "我_是_ Ollama _大_模_型，_请_问_有_什_么_可_以_帮_你_？",
-    "Gemini": "我_是_ Gemini _大_模_型，_请_问_有_什_么_可_以_帮_你_？",
-    "ZhipuAI": "我_是_智谱_大_模_型，_请_问_有_什_么_可_以_帮_你_？",
-    "Spark": "我_是_讯飞_星火_大_模_型，_请_问_有_什_么_可_以_帮_你_？",
-    "ERNIE": "我_是_百度_文心_大_模_型，_请_问_有_什_么_可_以_帮_你_？",
-    "Tongyi": "我_是_阿里_通义_大_模_型，_请_问_有_什_么_可_以_帮_你_？",
-    "Tiangong": "我_是_天工_大_模_型，_请_问_有_什_么_可_以_帮_你_？",
-    "MoonshotAI": "我_是_月之_暗面_大_模_型，_请_问_有_什_么_可_以_帮_你_？",
-    "StepFun": "我_是_阶跃_星辰_大_模_型，_请_问_有_什_么_可_以_帮_你_？",
-    "DeepSeek": "我_是_ DeepSeek _大_模_型，_请_问_有_什_么_可_以_帮_你_？"
+    "FlickX": "我_是_ 视途科技 FlickX _大_模_型，_请_问_有_什_么_可_以_帮_你_？"
   },
   "translationProvider": {
     "youdao": "有道翻译",
