@@ -142,9 +142,6 @@ onMounted(() => {
     <div class="app fade-in-from" :class="{ 'fade-in-to': !systemStore.isWelcomeShow }">
       <!-- 侧边栏 -->
       <div class="app-sidebar drag-area">
-        <!-- <div :class="{ 'app-sidebar-avatar-macos': getPlatform().isMacOS }">
-          <UserAvatar :editable="true" :size="36" />
-        </div> -->
         <div
           v-for="c in sidebarConfig"
           :key="c.name"

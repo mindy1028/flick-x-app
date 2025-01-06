@@ -135,14 +135,8 @@ async function viewUserLogin() {
           const userDataModel = UserDataModel.fromJson(
             JSON.stringify(response_user_info.data)
           );
-          // console.log(userDataModel)
-          // console.log(userDataModel.user_id)
-          // console.log(response_user_info.data.user_id)
-          // 保存用户信息到cookie
-          // CookieManager.setCookie("userId", String(userDataModel.user_id), 30);
-          // 保存用户信息到Vuex store
-          // userStore.commit("setUser", userDataModel);
-          // LocalStorageUtils.setItem("userInfo", userDataModel.toString());
+          console.log(userDataModel)
+          console.log(userDataModel.user_id)
 
           systemStore.isWelcomeShow = false
           window.location.reload();
@@ -192,11 +186,6 @@ onMounted(() => {
   <div class="welcome-page z-index-max">
     <div class="cine-login-dialog">
       <div class="cineai-login-dialog-content">
-        <!-- <div class="cineai-login-dialog-content-child">
-          <span class="cineai-login-dialog-content-child-title">扫码关注</span>
-          <img src="../../../assets/images/login-sitoai.png" />
-        </div> -->
-        <!-- <div class="vertical-line"></div> -->
         <div class="cineai-login-dialog-content-child">
           <span class="cineai-login-dialog-content-child-title">Flick-X登录</span>
           <div class="cineai-login-dialog-input-group">

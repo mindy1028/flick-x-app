@@ -1,37 +1,37 @@
-import { defineStore } from 'pinia'
+import { defineStore } from 'pinia';
+import { UserDataModel } from '../model/IUserDataModel';
 
 export const useUserStore = defineStore({
   id: 'user',
   state: () => ({
-    avatar: '',
-    nickname: 'Some one',
-    lastStartupTime: 0
+    userData: null as UserDataModel | null,
   }),
   getters: {
     getStoreJson(): string {
-      return JSON.stringify({
-        avatar: this.avatar,
-        nickname: this.nickname
-      })
-    }
+      return JSON.stringify(this.userData);
+    },
   },
   actions: {
-    setStoreFromJson(json: string) {
-      let importFlag = false
+    setStoreFromJson(json: string): boolean {
+      let importFlag = false;
       if (!json) {
-        return importFlag
+        return importFlag;
       }
-      const userBackup = JSON.parse(json)
-      if (userBackup.avatar !== undefined) {
-        this.avatar = userBackup.avatar
-        importFlag = true
+      try {
+        const userBackup = JSON.parse(json) as UserDataModel;
+        this.userData = userBackup;
+        importFlag = true;
+      } catch (error) {
+        console.error('Failed to parse JSON:', error);
       }
-      if (userBackup.nickname !== undefined) {
-        this.nickname = userBackup.nickname
-        importFlag = true
-      }
-      return importFlag
-    }
+      return importFlag;
+    },
+    setUser(userData: UserDataModel) {
+      this.userData = userData;
+    },
+    clearUser() {
+      this.userData = null;
+    },
   },
-  persist: true
-})
+  persist: true,
+});
