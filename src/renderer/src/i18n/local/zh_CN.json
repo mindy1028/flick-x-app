@@ -31,6 +31,10 @@
   },
   "setting": {
     "name": "设置",
+    "user": {
+      "name":"我的",
+      "info":"用户信息"
+    },
     "app": {
       "name": "应用",
       "appearance": {

@@ -291,6 +291,56 @@ onMounted(() => {
       <!-- 设置页 -->
       <div class="setting-page">
         <a-tabs position="left" :default-active-key="settingDefaultActiveKey">
+          <!-- 用户 -->
+          <a-tab-pane key="user" :title="$t('setting.user.name')">
+            <a-space direction="vertical" :size="25" fill class="setting-tab-content">
+              <!-- 在这里添加用户页面的内容 -->
+              <div>{{ $t('setting.user.info') }}</div>
+              <!-- 其他用户相关的组件 -->
+            </a-space>
+          </a-tab-pane>
+
+          <!-- 关于 -->
+          <a-tab-pane key="about" :title="$t('setting.about.name')">
+            <a-space direction="vertical" :size="25" fill class="setting-tab-content">
+              <a-space direction="vertical" :size="10">
+                <div>{{ $t('setting.about.version.name') }}</div>
+                <div>
+                  <a-space :size="10">
+                    <div>{{ $t('setting.about.version.current') }} v{{ appVersion }}</div>
+                    <a-badge :count="newVersionFlag ? 1 : 0" dot :dot-style="{ width: '7px', height: '7px' }">
+                      <a-button size="small" @click="openInBrowser('http://www.sitoai.cn/flickx/')">
+                        <a-space :size="5">
+                          <icon-download />
+                          <span>{{ $t('setting.about.version.download') }}</span>
+                        </a-space>
+                      </a-button>
+                    </a-badge>
+                  </a-space>
+                </div>
+              </a-space>
+              <a-space direction="vertical" :size="10" fill>
+                <div>{{ $t('setting.about.companyEmail') }}</div>
+                <a-link href="mailto:fangjunjievip@hotmail.com" style="color: #ef4477;">
+                  pan@sitoai.cn</a-link>
+              </a-space>
+              <a-space direction="vertical" :size="10" fill>
+                <div>{{ $t('setting.about.contactAuthor') }}</div>
+                <a-link><img src="@renderer/assets/images/login-sitoai.png" alt=""></a-link>
+              </a-space>
+              <!-- <a-space direction="vertical" :size="10">
+                <div>{{ $t('setting.about.devTools.name') }}</div>
+                <div>
+                  <a-space :size="10">
+                    <a-button size="small" @click="systemStore.isWelcomeShow = true">
+                      <span>{{ $t('setting.about.devTools.welcomePage') }}</span>
+                    </a-button>
+                  </a-space>
+                </div>
+              </a-space> -->
+            </a-space>
+          </a-tab-pane>
+
           <!-- 外观 -->
           <a-tab-pane key="appearance" :title="$t('setting.app.appearance.name')">
             <a-space direction="vertical" :size="25" fill class="setting-tab-content">
@@ -345,46 +395,7 @@ onMounted(() => {
             </a-space>
           </a-tab-pane>
 
-          <!-- 关于 -->
-          <a-tab-pane key="about" :title="$t('setting.about.name')">
-            <a-space direction="vertical" :size="25" fill class="setting-tab-content">
-              <a-space direction="vertical" :size="10">
-                <div>{{ $t('setting.about.version.name') }}</div>
-                <div>
-                  <a-space :size="10">
-                    <div>{{ $t('setting.about.version.current') }} v{{ appVersion }}</div>
-                    <a-badge :count="newVersionFlag ? 1 : 0" dot :dot-style="{ width: '7px', height: '7px' }">
-                      <a-button size="small" @click="openInBrowser('http://www.sitoai.cn/flickx/')">
-                        <a-space :size="5">
-                          <icon-download />
-                          <span>{{ $t('setting.about.version.download') }}</span>
-                        </a-space>
-                      </a-button>
-                    </a-badge>
-                  </a-space>
-                </div>
-              </a-space>
-              <a-space direction="vertical" :size="10" fill>
-                <div>{{ $t('setting.about.companyEmail') }}</div>
-                <a-link href="mailto:fangjunjievip@hotmail.com" style="color: #ef4477;">
-                  pan@sitoai.cn</a-link>
-              </a-space>
-              <a-space direction="vertical" :size="10" fill>
-                <div>{{ $t('setting.about.contactAuthor') }}</div>
-                <a-link><img src="@renderer/assets/images/login-sitoai.png" alt=""></a-link>
-              </a-space>
-              <!-- <a-space direction="vertical" :size="10">
-                <div>{{ $t('setting.about.devTools.name') }}</div>
-                <div>
-                  <a-space :size="10">
-                    <a-button size="small" @click="systemStore.isWelcomeShow = true">
-                      <span>{{ $t('setting.about.devTools.welcomePage') }}</span>
-                    </a-button>
-                  </a-space>
-                </div>
-              </a-space> -->
-            </a-space>
-          </a-tab-pane>
+
         </a-tabs>
       </div>
     </a-modal>

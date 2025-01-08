@@ -30,6 +30,10 @@
   },
   "setting": {
     "name": "Settings",
+    "user": {
+      "name":"mine",
+      "info":"user info"
+    },
     "app": {
       "name": "Application",
       "appearance": {
