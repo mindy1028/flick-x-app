@@ -12,10 +12,12 @@ import { InstallCodemirro } from 'codemirror-editor-vue3'
 // vue3
 import { createApp } from 'vue'
 
+import router from './router'
+
 const app = createApp(App)
 app.use(ArcoVue)
 app.use(ArcoVueIcon)
 app.use(store)
-app.use(i18n)
+app.use(i18n).use(router)
 app.use(InstallCodemirro)
 app.mount('#app')

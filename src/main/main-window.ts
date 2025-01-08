@@ -2,9 +2,10 @@
 import { mainWindowConfig } from './config'
 import { getDockIcon } from './dock'
 import { is, platform } from '@electron-toolkit/utils'
-import { BrowserWindow, nativeTheme, shell } from 'electron'
+import { nativeTheme, shell } from 'electron'
 import { join } from 'path'
 import { Logger } from 'winston'
+import * as Splashscreen from "@trodi/electron-splashscreen";
 
 const __dirname = import.meta.dirname
 
@@ -12,34 +13,43 @@ export const createWindow = (store: Record<string, any>, logger: Logger) => {
   // 获取主窗口尺寸
   const mainWindowSize = store.get('main-window-size') as { width: number; height: number }
 
-  // 创建主窗口
-  const mainWindow = new BrowserWindow({
-    width: mainWindowSize?.width ?? mainWindowConfig.minWidth,
-    height: mainWindowSize?.height ?? mainWindowConfig.minHeight,
-    minWidth: mainWindowConfig.minWidth,
-    minHeight: mainWindowConfig.minHeight,
-    show: false,
-    autoHideMenuBar: true,
-    // mac下不显示标题栏
-    titleBarStyle: 'hiddenInset',
-    // mac下红绿灯位置
-    trafficLightPosition: {
-      x: 5,
-      y: 5
+  // 配置 Splash Screen
+  const splashScreenConfig: Splashscreen.Config = {
+    windowOpts: {
+      width: mainWindowSize?.width ?? mainWindowConfig.minWidth,
+      height: mainWindowSize?.height ?? mainWindowConfig.minHeight,
+      minWidth: mainWindowConfig.minWidth,
+      minHeight: mainWindowConfig.minHeight,
+      show: false,
+      autoHideMenuBar: true,
+      titleBarStyle: 'hiddenInset',
+      trafficLightPosition: {
+        x: 5,
+        y: 5
+      },
+      backgroundColor: nativeTheme.shouldUseDarkColors ? '#28282B' : '#F2F3F5',
+      ...(platform.isLinux ? { icon: getDockIcon(0) } : { icon: getDockIcon(0) }),
+      webPreferences: {
+        preload: join(__dirname, '../preload/index.js'),
+        sandbox: false,
+        webSecurity: false,
+        webviewTag: true
+      }
     },
-    // 动态背景色
-    backgroundColor: nativeTheme.shouldUseDarkColors ? '#28282B' : '#F2F3F5',
-    ...(platform.isLinux ? { icon: getDockIcon(0) } : { icon: getDockIcon(0) }),
-    webPreferences: {
-      preload: join(__dirname, '../preload/index.js'),
-      // 允许渲染进程通信（window.electron）
-      sandbox: false,
-      // 允许跨域请求、file协议加载本地文件等
-      webSecurity: false,
-      // 启动webview
-      webviewTag: true
+    templateUrl: join(__dirname, '../renderer/splash.html'), // 确保这是你的启动画面 HTML 文件的正确路径
+    splashScreenOpts: {
+      width: 425, // Splash Screen 的宽度
+      height: 325, // Splash Screen 的高度
+      transparent: true, // 是否透明
+      resizable: false, // 是否可调整大小
+      alwaysOnTop: true, // 是否始终在最上层
+      center: true,
+      movable: false,
     }
-  })
+  }
+
+  // 创建主窗口并附加 Splash Screen
+  const mainWindow = Splashscreen.initSplashScreen(splashScreenConfig)
 
   // 准备就绪后显示主窗口
   mainWindow.on('ready-to-show', () => {

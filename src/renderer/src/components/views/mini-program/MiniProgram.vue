@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import miniProgramJsonData from '@renderer/assets/json/mini-program.json'
+import AssistantAvatar from '@renderer/components/avatar/AssistantAvatar.vue'
 import MyWebView from '@renderer/components/views/mini-program/MyWebView.vue'
 import { useSettingStore } from '@renderer/store/setting'
-import { openInBrowser } from '@renderer/utils/window-util'
-import axios from 'axios'
+import { agentSelectAll } from "@renderer/api/agentapi"
 import { computed, nextTick, onMounted, reactive, ref, toRefs } from 'vue'
 
 // store
@@ -42,15 +42,6 @@ const openApp = (app: MiniProgram) => {
   }
 }
 
-// webview刷新
-const webviewReload = () => {
-  const url = data.currentApp.url
-  data.currentApp.url = ''
-  nextTick(() => {
-    data.currentApp.url = url
-  })
-}
-
 // 监听组件尺寸
 const watchAIAppSize = () => {
   const resizeObserver = new ResizeObserver((entries) => {
@@ -72,32 +63,22 @@ const watchAIAppSize = () => {
 }
 
 // 请求小程序列表
-const fetchMiniProgramList = () => {
+async function fetchMiniProgramList() {
   data.loading = true
-  axios
-    .get(
-      'https://api.github.com/repos/classfang/AIHub/contents/src/renderer/src/assets/json/mini-program.json',
-      {
-        headers: {
-          Accept: 'application/vnd.github.v3.raw'
-        }
-      }
-    )
-    .then((resp) => {
-      data.miniProgramList = resp.data as MiniProgram[]
-    })
-    .catch(() => {
-      data.miniProgramList = miniProgramJsonData as MiniProgram[]
-    })
-    .finally(() => {
-      data.loading = false
-    })
+
+  const result = await agentSelectAll()
+  if (result.code != 200) {
+    console.log("获取智能体失败")
+    return
+  }
+  data.miniProgramList = result.data as MiniProgram[]
+  data.loading = false
 }
 
 // 挂载完毕
 onMounted(() => {
   // 监听组件尺寸
-  watchAIAppSize()
+  // watchAIAppSize()
   // 请求小程序列表
   fetchMiniProgramList()
 })
@@ -109,34 +90,33 @@ onMounted(() => {
     <div class="mini-program-header drag-area">
       <div class="mini-program-header-title">{{ $t('miniProgram.name') }}</div>
       <div class="mini-program-header-search">
-        <a-input-search
-          v-model="keyword"
-          size="small"
-          :placeholder="$t('miniProgram.search')"
-          class="search-input no-drag-area"
-        />
+        <a-input-search v-model="keyword" size="small" :placeholder="$t('miniProgram.search')"
+          class="search-input no-drag-area" />
       </div>
     </div>
     <!-- 列表 -->
-    <a-scrollbar
-      outer-class="mini-program-list-container arco-scrollbar-small"
-      style="height: calc(100vh - 55px); overflow-y: auto"
-    >
-      <div
-        v-if="appListFilter.length > 0"
-        class="mini-program-list"
-        :style="{ width: `${miniProgramListStyle.width}px` }"
-      >
+    <a-scrollbar outer-class="mini-program-list-container arco-scrollbar-small"
+      style="height: calc(100vh - 55px); display: flex; flex-direction: row; width: 100%;">
+      <!-- 左侧内容 -->
+      <div class="mini-program-list-left" v-if="appListFilter.length > 0" style="margin-right: 10px;">
         <div v-for="a in appListFilter" :key="a.url" class="mini-program-card" @click="openApp(a)">
           <a-card :title="a.name[settingStore.app.locale]" hoverable>
-            <template #extra>
-              <icon-right />
-            </template>
             {{ a.desc[settingStore.app.locale] }}
           </a-card>
         </div>
       </div>
-      <div v-else class="mini-program-list-empty">
+      <!-- 右侧内容 -->
+      <div class="mini-program-list-right" v-if="appListFilter.length > 0">
+        <!-- 右侧的内容，根据实际需求填充 -->
+        <div v-if="!data.currentApp.url">
+          <div class="mini-program-avatar">
+            <AssistantAvatar :size="40" />
+            {{ $t('common.slogan2') }}
+          </div>  
+        </div>
+        <!-- 这里可以放置与左侧不同的内容 -->
+      </div>
+      <div class="mini-program-list-empty" v-else>
         <a-empty>
           <template #image>
             <icon-apps />
@@ -146,36 +126,11 @@ onMounted(() => {
       </div>
     </a-scrollbar>
     <!-- 刷新按钮 -->
-    <a-button
-      class="mini-program-list-refresh-btn"
-      type="primary"
-      shape="circle"
-      :disabled="loading"
-      @click="fetchMiniProgramList"
-    >
+    <a-button class="mini-program-list-left-refresh-btn" type="primary" shape="circle" :disabled="loading"
+      @click="fetchMiniProgramList">
       <icon-loading v-if="loading" spin />
       <icon-refresh v-else />
     </a-button>
-    <!-- webview窗口 -->
-    <transition name="slide2top">
-      <div v-if="isWebviewShow" class="mini-program-webview">
-        <div class="webview-header">
-          <div class="webview-header-title">
-            {{ currentApp.name[settingStore.app.locale] }}
-          </div>
-          <a-button class="webview-header-btn no-drag-area" @click="webviewReload">
-            <icon-refresh :size="16" />
-          </a-button>
-          <a-button class="webview-header-btn no-drag-area" @click="openInBrowser(currentApp.url)">
-            <icon-launch :size="16" />
-          </a-button>
-          <a-button class="webview-header-btn no-drag-area" @click="isWebviewShow = false">
-            <icon-close :size="16" />
-          </a-button>
-        </div>
-        <MyWebView :url="currentApp.url" :allowpopups="true" class="webview" />
-      </div>
-    </transition>
   </div>
 </template>
 
@@ -217,17 +172,22 @@ onMounted(() => {
     flex: 1;
     min-height: 0;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
 
-    .mini-program-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 15px;
+    .mini-program-list-left {
+      overflow-y: scroll;
       box-sizing: border-box;
-      padding: 15px 0;
+      padding: 10px 0;
+      max-width: 80vw;
+      /* 设置左侧容器的宽度为 250px */
+      width: 30%;
+      flex-shrink: 0;
+      /* 防止在空间不足时缩小 */
 
       .mini-program-card {
-        width: 280px;
+        width: 25vw;
+        margin: 1vw;
+        cursor: pointer;
 
         :deep(.arco-card-header-title) {
           font-size: var(--font-size-lg);
@@ -242,6 +202,10 @@ onMounted(() => {
           font-size: var(--font-size-default);
         }
       }
+
+      .mini-program-card:hover {
+        color: #EF4477;
+      }
     }
 
     .mini-program-list-empty {
@@ -250,61 +214,29 @@ onMounted(() => {
       display: flex;
       align-items: center;
       justify-content: center;
+      padding: 10px 0;
     }
   }
 
-  .mini-program-list-refresh-btn {
+  .mini-program-list-left-refresh-btn {
     position: absolute;
     right: 15px;
     bottom: 15px;
     background-color: #EF4477;
   }
 
-  .mini-program-webview {
-    position: absolute;
-    width: 100%;
-    height: 100vh;
+  .mini-program-list-right {
+    width: 80%;
+    padding: 10px;
     display: flex;
-    flex-direction: column;
-    background-color: var(--color-bg-1);
+    align-items: center;
+    justify-content: center;
 
-    .webview-header {
-      flex-shrink: 0;
-      height: 55px;
-      border-bottom: 1px solid var(--color-border-1);
-      box-sizing: border-box;
-      padding: 15px;
+    .mini-program-avatar {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 5px;
-
-      .webview-header-title {
-        margin-right: auto;
-        font-weight: bold;
-        font-size: var(--font-size-lg);
-      }
-
-      .webview-header-btn {
-        flex-shrink: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 30px;
-        width: 30px;
-        padding: 0;
-        background-color: transparent;
-
-        &:hover {
-          background-color: var(--color-fill-2);
-        }
-      }
-    }
-
-    .webview {
-      border: none;
-      width: 100%;
-      height: calc(100vh - 55px);
+      flex-direction: column; 
+      align-items: center; 
+      gap: 10px;
     }
   }
 }

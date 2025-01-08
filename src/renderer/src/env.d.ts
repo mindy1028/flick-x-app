@@ -135,6 +135,7 @@ interface CalendarReport {
 }
 
 interface MiniProgram {
+  id: number
   type: MiniProgramType
   name: Record<string, string>
   desc: Record<string, string>

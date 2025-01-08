@@ -12,8 +12,8 @@ import { Notification } from '@arco-design/web-vue';
 const userStore = useUserStore()
 const systemStore = useSystemStore()
 
-const phoneNumber = ref("");
-const phoneCaptcha = ref("");
+const phoneNumber = ref("15810559059");
+const phoneCaptcha = ref("462032");
 const captcha_message = ref("获取验证码");
 const captcha_state = ref(false);
 const has_read = ref(false);
@@ -112,22 +112,26 @@ async function viewUserLogin() {
     const encryptStr = cry.encrypt(phoneCaptcha.value);
     // 调用userGetCaptcha函数
     const response = await userLogin(phoneNumber.value, encryptStr);
+    console.log(response)
     // 处理响应
     if (response.code != 200) {
       // 处理错误情况
       // notify("登录失败", response.msg ? response.msg : "", "error");
       Notification.error({ title: '登录失败', content: response.msg ? response.msg : "" })
+      console.log("登录失败")
     } else {
       // 获取用户信息
       try {
-        if(response.data.data.isSuccess == 0) {
+        if (response.data.data.isSuccess == 0) {
           Notification.error({ title: '登录失败', content: "服务器异常" })
+          console.log("登录失败")
           return
         }
         const response_user_info = await getUserInfo(response.data.data.user_id);
         if (response_user_info.code != 200) {
           // notify("", "登录失败,用户信息获取失败", "error");
           Notification.error({ title: '', content: "登录失败,用户信息获取失败" })
+          console.log("登录失败")
         } else {
           // notify("", "登录成功", "success");
           Notification.success({ title: '', content: "登录成功" })
@@ -138,8 +142,21 @@ async function viewUserLogin() {
           console.log(userDataModel)
           console.log(userDataModel.user_id)
 
-          systemStore.isWelcomeShow = false
-          window.location.reload();
+          if (
+            nowTimestamp() - userStore.lastStartupTime > 24 * 60 * 60 * 1000 ||
+            !systemStore.isStartup
+          ) {
+            for (let i = 0; i < data.providers.length; i++) {
+              await simulateThreadWait(200)
+              providerShowIndex.value++
+            }
+            await simulateThreadWait(2000)
+          }
+          if (systemStore.isStartup) {
+            systemStore.isStartup = true
+            systemStore.isWelcomeShow = true
+            userStore.lastStartupTime = nowTimestamp()
+          }
         }
       } catch (error) {
         // 处理请求错误

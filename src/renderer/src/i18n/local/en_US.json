@@ -1,6 +1,6 @@
 {
   "common": {
-    "slogan": "The era of artificial intelligence has dawned.",
+    "slogan": "You are not along.",
     "ok": "Confirm",
     "cancel": "Cancel",
     "save": "Save",
@@ -392,9 +392,9 @@
     }
   },
   "miniProgram": {
-    "name": "AI mini program",
-    "search": "Search mini program",
-    "empty": "No mini program"
+    "name": "AI Agent",
+    "search": "Search Agent",
+    "empty": "No Agent"
   },
   "notification": {
     "name": "Notification",

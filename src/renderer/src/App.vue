@@ -139,7 +139,7 @@ onMounted(() => {
   <a-config-provider :locale="arcoDesignLocal">
     <!-- 欢迎页 -->
     <WelcomePage v-if="systemStore.isWelcomeShow" />
-    <div class="app fade-in-from" :class="{ 'fade-in-to': !systemStore.isWelcomeShow }">
+    <div v-else class="app fade-in-from" :class="{ 'fade-in-to': !systemStore.isWelcomeShow }">
       <!-- 侧边栏 -->
       <div class="app-sidebar drag-area">
         <div

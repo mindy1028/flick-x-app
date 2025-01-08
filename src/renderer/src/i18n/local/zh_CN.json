@@ -1,6 +1,7 @@
 {
   "common": {
-    "slogan": "人工智能时代已然到来",
+    "slogan1": "You are not alone",
+    "slogan2": "We can do everyting you want",
     "ok": "确定",
     "cancel": "取消",
     "save": "保存",
@@ -338,9 +339,9 @@
     }
   },
   "miniProgram": {
-    "name": "AI 小程序",
-    "search": "搜索小程序",
-    "empty": "暂无相关小程序"
+    "name": "AI 智能体",
+    "search": "搜索智能体",
+    "empty": "暂无相关智能体"
   },
   "notification": {
     "name": "提醒",

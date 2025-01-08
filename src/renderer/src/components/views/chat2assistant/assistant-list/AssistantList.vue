@@ -243,6 +243,11 @@ onMounted(() => {
     }
   }
 
+  .assistant-item {
+    border-radius: 8px; // 添加这个属性来设置圆角
+    overflow: hidden; // 确保内容不会超出圆角边界
+  }
+
   .assistant-list-empty {
     flex-grow: 1;
     display: flex;

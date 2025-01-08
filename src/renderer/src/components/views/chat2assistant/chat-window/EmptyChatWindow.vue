@@ -7,7 +7,7 @@
         <template #image>
           <icon-message />
         </template>
-        {{ $t('common.slogan') }}
+        {{ $t('common.slogan1') }}
       </a-empty>
     </div>
   </div>

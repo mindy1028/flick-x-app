@@ -676,9 +676,6 @@ onBeforeUnmount(() => {
             <template #content>
               <a-doption @click="clipboardWriteText(getSelectedText(msg.content))">{{ $t('chatWindow.copy') }}
               </a-doption>
-              <a-doption v-if="isSupportSpeechComputed" @click="startSpeech(getSelectedText(msg.content))">{{
-                $t('chatWindow.speech') }}
-              </a-doption>
               <a-doption @click="multipleChoiceOpen(msg.id)">{{ $t('chatWindow.multipleChoice') }}
               </a-doption>
             </template>

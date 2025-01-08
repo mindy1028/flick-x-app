@@ -1,98 +1,93 @@
 [
   {
+    "id": 1,
     "type": "webview",
     "url": "https://chat.openai.com",
     "name": {
-      "en_US": "ChatGPT",
-      "zh_CN": "ChatGPT"
+      "en_US": "AI 程序员",
+      "zh_CN": "AI 程序员"
     },
     "desc": {
       "en_US": "Large language model application from OpenAI",
-      "zh_CN": "OpenAI 推出的大语言模型应用"
+      "zh_CN": "AI 程序员"
     }
   },
   {
+    "id": 1,
     "type": "webview",
-    "url": "https://xinghuo.xfyun.cn/desk",
+    "url": "https://chat.openai.com",
     "name": {
-      "en_US": "iFLYTEK Spark",
-      "zh_CN": "讯飞星火"
+      "en_US": "AI 程序员",
+      "zh_CN": "AI 程序员"
     },
     "desc": {
-      "en_US": "Large language model application launched by iFlytek",
-      "zh_CN": "科大讯飞推出的大语言模型应用"
+      "en_US": "Large language model application from OpenAI",
+      "zh_CN": "AI 程序员"
     }
   },
   {
+    "id": 1,
     "type": "webview",
-    "url": "https://yiyan.baidu.com",
+    "url": "https://chat.openai.com",
     "name": {
-      "en_US": "ERNIE Bot",
-      "zh_CN": "文心一言"
+      "en_US": "AI 程序员",
+      "zh_CN": "AI 程序员"
     },
     "desc": {
-      "en_US": "Large language model application launched by Baidu",
-      "zh_CN": "百度推出的大语言模型应用"
+      "en_US": "Large language model application from OpenAI",
+      "zh_CN": "AI 程序员"
     }
   },
   {
+    "id": 1,
     "type": "webview",
-    "url": "https://tongyi.aliyun.com/qianwen",
+    "url": "https://chat.openai.com",
     "name": {
-      "en_US": "Tongyi Qianwen",
-      "zh_CN": "通义千问"
+      "en_US": "AI 程序员",
+      "zh_CN": "AI 程序员"
     },
     "desc": {
-      "en_US": "Large language model application launched by Alibaba",
-      "zh_CN": "阿里巴巴推出的大语言模型应用"
+      "en_US": "Large language model application from OpenAI",
+      "zh_CN": "AI 程序员"
     }
   },
   {
+    "id": 1,
     "type": "webview",
-    "url": "https://model-platform-skyagents.tiangong.cn/home/agent",
+    "url": "https://chat.openai.com",
     "name": {
-      "en_US": "Tiangong",
-      "zh_CN": "天工"
+      "en_US": "AI 程序员",
+      "zh_CN": "AI 程序员"
     },
     "desc": {
-      "en_US": "Large language model application launched by Kunlun",
-      "zh_CN": "昆仑万维推出的大语言模型应用"
+      "en_US": "Large language model application from OpenAI",
+      "zh_CN": "AI 程序员"
     }
   },
   {
+    "id": 1,
     "type": "webview",
-    "url": "https://www.doubao.com",
+    "url": "https://chat.openai.com",
     "name": {
-      "en_US": "Doubao",
-      "zh_CN": "豆包"
+      "en_US": "AI 程序员",
+      "zh_CN": "AI 程序员"
     },
     "desc": {
-      "en_US": "Tiktok's AI tool, your smart partner",
-      "zh_CN": "抖音旗下AI工具，你的智能伙伴"
+      "en_US": "Large language model application from OpenAI",
+      "zh_CN": "AI 程序员"
     }
   },
   {
+    "id": 1,
     "type": "webview",
-    "url": "https://www.coze.cn/home",
+    "url": "https://chat.openai.com",
     "name": {
-      "en_US": "Coze",
-      "zh_CN": "扣子"
+      "en_US": "AI 程序员",
+      "zh_CN": "AI 程序员"
     },
     "desc": {
-      "en_US": "A new generation of AI Bot development platform",
-      "zh_CN": "新一代的 AI Bot 开发平台"
-    }
-  },
-  {
-    "type": "webview",
-    "url": "https://www.liblib.ai",
-    "name": {
-      "en_US": "LiblibAI",
-      "zh_CN": "哩布AI"
-    },
-    "desc": {
-      "en_US": "China's leading AI creation platform",
-      "zh_CN": "中国领先的AI创作平台"
+      "en_US": "Large language model application from OpenAI",
+      "zh_CN": "AI 程序员"
     }
   }
 ]

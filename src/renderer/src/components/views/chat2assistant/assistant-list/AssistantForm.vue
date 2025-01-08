@@ -31,7 +31,7 @@ watch(
     }
 
     // 发音参数
-    if (value === 'OpenAI') {
+    if (value === 'FlickX') {
       assistant.value.speechModel = 'tts-1'
       assistant.value.speechVoice = 'alloy'
       assistant.value.speechSpeed = 1.0
