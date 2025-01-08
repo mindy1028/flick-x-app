@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Splash Screen</title>
+  <style>
+    /* 全局样式 */
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #1e1e1e; /* 深色背景 */
+      color: #ffffff; /* 文字颜色 */
+      font-family: Arial, sans-serif;
+      overflow: hidden; /* 防止滚动条 */
+    }
+
+    /* 容器样式 */
+    .splash-container {
+      text-align: center;
+    }
+
+    /* Logo 样式 */
+    .logo {
+      width: 150px; /* Logo 大小 */
+      height: 150px;
+      margin-bottom: 20px;
+      background-color: #3498db; /* 蓝色背景，可以替换为你的 Logo 图片 */
+      border-radius: 50%; /* 圆形 Logo */
+      display: inline-block;
+    }
+
+    /* 加载动画样式 */
+    .loader {
+      border: 4px solid #f3f3f3; /* 浅色边框 */
+      border-top: 4px solid #3498db; /* 蓝色顶部边框 */
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 2s linear infinite; /* 旋转动画 */
+      margin: 0 auto; /* 居中 */
+    }
+
+    /* 旋转动画 */
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* 标题样式 */
+    .title {
+      font-size: 24px;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+
+    /* 副标题样式 */
+    .subtitle {
+      font-size: 16px;
+      color: #b0b0b0; /* 浅灰色 */
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="splash-container">
+    <!-- Logo -->
+    <div class="logo"></div>
+    <!-- 加载动画 -->
+    <div class="loader"></div>
+    <!-- 标题 -->
+    <div class="title">Kimi Desktop</div>
+    <!-- 副标题 -->
+    <div class="subtitle">Loading...</div>
+  </div>
+</body>
+</html>
