@@ -49,6 +49,15 @@
         "min": "小",
         "max": "大"
       },
+      "user": {
+        "name": "用户",
+        "userinfo": {
+          "account": "账号",
+          "userid": "用户Id",
+          "area": "国家·地区",
+          "agentList": "已订购agent列表"
+        }
+      },
       "network": {
         "name": "网络",
         "proxy": "代理地址"

@@ -31,7 +31,6 @@
   "setting": {
     "name": "Settings",
     "app": {
-      "name": "Application",
       "appearance": {
         "name": "Appearance",
         "theme": {
@@ -47,6 +46,15 @@
         "fontSize": "Text size",
         "min": "min",
         "max": "max"
+      },
+      "user": {
+        "name": "mine",
+        "userinfo": {
+          "account": "account",
+          "userid": "userid",
+          "area": "country·area",
+          "agentList": "mine agents"
+        }
       },
       "network": {
         "name": "Network",
