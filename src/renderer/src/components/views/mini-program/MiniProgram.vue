@@ -105,6 +105,8 @@ onMounted(() => {
           </a-card>
         </div>
       </div>
+      <!-- 分割线 -->
+      <a-divider class="mini-program-divider" orientation="vertical" />
       <!-- 右侧内容 -->
       <div class="mini-program-list-right" v-if="appListFilter.length > 0">
         <!-- 右侧的内容，根据实际需求填充 -->
@@ -216,6 +218,11 @@ onMounted(() => {
       justify-content: center;
       padding: 10px 0;
     }
+  }
+
+  .mini-program-divider {
+    border-left: 1px solid #d9d9d9; // 分割线颜色
+    height: 100%; // 分割线高度，使其填满父容器的高度
   }
 
   .mini-program-list-left-refresh-btn {

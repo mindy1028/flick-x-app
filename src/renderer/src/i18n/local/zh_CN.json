@@ -31,10 +31,6 @@
   },
   "setting": {
     "name": "设置",
-    "user": {
-      "name":"我的",
-      "info":"用户信息"
-    },
     "app": {
       "name": "应用",
       "appearance": {
@@ -52,6 +48,15 @@
         "fontSize": "文字大小",
         "min": "小",
         "max": "大"
+      },
+      "user": {
+        "name": "用户",
+        "userinfo": {
+          "account": "账号",
+          "userid": "用户Id",
+          "area": "国家·地区",
+          "agentList": "已订购agent列表"
+        }
       },
       "network": {
         "name": "网络",

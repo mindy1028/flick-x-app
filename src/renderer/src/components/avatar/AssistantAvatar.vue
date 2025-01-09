@@ -23,7 +23,7 @@ defineProps({
     background-color: var(--color-bg-white);
 
     img {
-      object-fit: contain;
+       object-fit: cover;  //如果出现4个边角试着删除img{}
     }
   }
 }

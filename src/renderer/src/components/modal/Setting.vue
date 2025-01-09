@@ -62,7 +62,7 @@ const settingDefaultActiveKey = computed(() => {
 })
 
 const checkNewVersion = () => {
-  fetch('https://api.github.com/repos/classfang/AIHub/releases/latest')
+  fetch('https://api.github.com/repos/mindy1028/flick-x-app/releases/latest')
     .then((res) => res.json())
     .then((json) => {
       if (json.name) {
@@ -292,10 +292,13 @@ onMounted(() => {
       <div class="setting-page">
         <a-tabs position="left" :default-active-key="settingDefaultActiveKey">
           <!-- 用户 -->
-          <a-tab-pane key="user" :title="$t('setting.user.name')">
+          <a-tab-pane key="user" :title="$t('setting.app.user.name')">
             <a-space direction="vertical" :size="25" fill class="setting-tab-content">
               <!-- 在这里添加用户页面的内容 -->
-              <div>{{ $t('setting.user.info') }}</div>
+              <div>{{ $t('setting.app.user.userinfo.account') }}</div>
+              <div>{{ $t('setting.app.user.userinfo.userid') }}</div>
+              <div>{{ $t('setting.app.user.userinfo.area') }}</div>
+              <div>{{ $t('setting.app.user.userinfo.agentList') }}</div>
               <!-- 其他用户相关的组件 -->
             </a-space>
           </a-tab-pane>
