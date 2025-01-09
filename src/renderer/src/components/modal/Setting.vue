@@ -54,11 +54,7 @@ const { appVersion, newVersionFlag, clearCacheFlag } = toRefs(data)
 
 // 计算默认切换的tab
 const settingDefaultActiveKey = computed(() => {
-  return systemStore.settingModal.defaultActiveKey
-    ? systemStore.settingModal.defaultActiveKey
-    : data.newVersionFlag
-      ? 'about'
-      : 'app'
+  return 'user'
 })
 
 const checkNewVersion = () => {
