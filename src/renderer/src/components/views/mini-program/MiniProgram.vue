@@ -182,6 +182,7 @@ onMounted(() => {
       /* 设置左侧容器的宽度为 250px */
       width: 30%;
       flex-shrink: 0;
+      border-right: 2px solid var(--color-border-1);
       /* 防止在空间不足时缩小 */
 
       .mini-program-card {
