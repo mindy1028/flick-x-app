@@ -134,12 +134,43 @@ interface CalendarReport {
   endTime: number
 }
 
+interface MiniProgramChangeLog {
+  currentVersion: string; // 对应 JSON 中的 "currentVersion"
+  updateTime: string; // 对应 JSON 中的 "updateTime"
+  updateDescription: string; // 对应 JSON 中的 "updateDescription"
+}
+
 interface MiniProgram {
-  id: number
-  type: MiniProgramType
-  name: Record<string, string>
-  desc: Record<string, string>
-  url: string
+  agentId: string; // 对应 JSON 中的 "agentId"
+  name: string; // 对应 JSON 中的 "name"
+  nickname: string; // 对应 JSON 中的 "nickname"
+  isActive: number; // 对应 JSON 中的 "isActive"，转换为布尔类型
+  cost: number; // 对应 JSON 中的 "cost"，转换为数字类型
+  currentVersion: string; // 对应 JSON 中的 "currentVersion"
+  avatar: string;
+  description: { // 对应 JSON 中的 "description"
+    short: string; // 对应 JSON 中的 "short"
+    medium: string; // 对应 JSON 中的 "medium"
+    long: string; // 对应 JSON 中的 "long"
+  };
+  features: { // 对应 JSON 中的 "features"
+    requirementsAnalysis: { // 对应 JSON 中的 "requirementsAnalysis"
+      documentReading: string; // 对应 JSON 中的 "documentReading"
+      informationExtraction: string; // 对应 JSON 中的 "informationExtraction"
+    };
+    codeWriting: { // 对应 JSON 中的 "codeWriting"
+      codeGeneration: string; // 对应 JSON 中的 "codeGeneration"
+      codeModification: string; // 对应 JSON 中的 "codeModification"
+    };
+    fileManagement: { // 对应 JSON 中的 "fileManagement"
+      localFileManagement: string; // 对应 JSON 中的 "localFileManagement"
+    };
+  };
+  usageInstructions: { // 对应 JSON 中的 "usageInstructions"
+    overview: string; // 对应 JSON 中的 "overview"
+    attentionMatters: string[]; // 对应 JSON 中的 "attentionMatters"
+  };
+  changeLog: MiniProgramChangeLog[];
 }
 
 interface AppNotification {

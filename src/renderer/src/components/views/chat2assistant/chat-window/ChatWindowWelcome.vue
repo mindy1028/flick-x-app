@@ -58,7 +58,7 @@ onMounted(() => {
 
 <template>
   <div class="chat-window-welcome">
-    <AssistantAvatar :size="40" />
+    <AssistantAvatar :size="50" />
     <div class="welcome-text">
       <span>{{ welcomeText }}</span>
       <span class="welcome-text-loading">丨</span>

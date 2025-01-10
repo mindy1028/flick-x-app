@@ -16,7 +16,7 @@ defineProps({
     <FileAvatar
       class="chat-message-file-avatar"
       :type="messageFile.name.split('.').at(-1)"
-      :size="30"
+      :size="50"
     />
     <div class="chat-message-file-body">
       <div class="chat-message-file-name">{{ messageFile.name }}</div>

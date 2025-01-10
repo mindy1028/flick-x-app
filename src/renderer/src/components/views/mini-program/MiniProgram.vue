@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import miniProgramJsonData from '@renderer/assets/json/mini-program.json'
 import AssistantAvatar from '@renderer/components/avatar/AssistantAvatar.vue'
-import MyWebView from '@renderer/components/views/mini-program/MyWebView.vue'
 import { useSettingStore } from '@renderer/store/setting'
 import { agentSelectAll } from "@renderer/api/agentapi"
 import { computed, nextTick, onMounted, reactive, ref, toRefs } from 'vue'
@@ -11,6 +9,8 @@ const settingStore = useSettingStore()
 
 // ref
 const miniProgramRef = ref()
+const SubscribeStatus = ref("订阅")
+const activeKey = ref('1')
 
 // 数据绑定
 const data = reactive({
@@ -29,17 +29,12 @@ const { loading, miniProgramListStyle, keyword, currentApp, isWebviewShow } = to
 
 // appList 过滤
 const appListFilter = computed(() => {
-  return data.miniProgramList.filter((app) =>
-    app.name[settingStore.app.locale].toLowerCase().includes(data.keyword.toLowerCase())
-  )
+  return data.miniProgramList
 })
 
 // 打开应用
 const openApp = (app: MiniProgram) => {
   data.currentApp = app
-  if (app.type === 'webview') {
-    data.isWebviewShow = true
-  }
 }
 
 // 监听组件尺寸
@@ -71,7 +66,7 @@ async function fetchMiniProgramList() {
     console.log("获取智能体失败")
     return
   }
-  data.miniProgramList = result.data as MiniProgram[]
+  data.miniProgramList = result.data as unknown as MiniProgram[]
   data.loading = false
 }
 
@@ -85,38 +80,68 @@ onMounted(() => {
 </script>
 
 <template>
-  <div ref="miniProgramRef" class="mini-program">
+  <div ref="miniProgramRef" class="ai-agent">
     <!-- 头部 -->
-    <div class="mini-program-header drag-area">
-      <div class="mini-program-header-title">{{ $t('miniProgram.name') }}</div>
-      <div class="mini-program-header-search">
+    <div class="ai-agent-header drag-area">
+      <div class="ai-agent-header-title">{{ $t('miniProgram.name') }}</div>
+      <div class="ai-agent-header-search">
         <a-input-search v-model="keyword" size="small" :placeholder="$t('miniProgram.search')"
           class="search-input no-drag-area" />
       </div>
     </div>
     <!-- 列表 -->
-    <a-scrollbar outer-class="mini-program-list-container arco-scrollbar-small"
+    <a-scrollbar outer-class="ai-agent-list-container arco-scrollbar-small"
       style="height: calc(100vh - 55px); display: flex; flex-direction: row; width: 100%;">
       <!-- 左侧内容 -->
-      <div class="mini-program-list-left" v-if="appListFilter.length > 0" style="margin-right: 10px;">
-        <div v-for="a in appListFilter" :key="a.url" class="mini-program-card" @click="openApp(a)">
-          <a-card :title="a.name[settingStore.app.locale]" hoverable>
-            {{ a.desc[settingStore.app.locale] }}
+      <div class="ai-agent-list-left" v-if="appListFilter.length > 0" style="margin-right: 10px;">
+        <div v-for="a in appListFilter" :key="a.agentId" class="ai-agent-card" @click="openApp(a)">
+          <a-card :title="a.name" hoverable>
+            {{ a.description.short }}
           </a-card>
         </div>
       </div>
       <!-- 右侧内容 -->
-      <div class="mini-program-list-right" v-if="appListFilter.length > 0">
+      <div class="ai-agent-list-right" v-if="appListFilter.length > 0"
+        :class="{ 'ai-agent-list-right-grid': data.currentApp.agentId }">
         <!-- 右侧的内容，根据实际需求填充 -->
-        <div v-if="!data.currentApp.url">
-          <div class="mini-program-avatar">
-            <AssistantAvatar :size="40" />
+        <div v-if="!data.currentApp.agentId">
+          <div class="ai-agent-avatar">
+            <AssistantAvatar :size="50" />
             {{ $t('common.slogan2') }}
-          </div>  
+          </div>
         </div>
         <!-- 这里可以放置与左侧不同的内容 -->
+        <div v-else class="ai-agent-overview">
+          <div class="ai-agent-overview-top">
+            <div class="ai-agent-overview-avatar-area">
+              <div class="ai-agent-avatar">
+                <img width="100vw" :src="data.currentApp.avatar" style="border-radius: 10px;">
+              </div>
+              <div class="ai-agent-description-area">
+                <div class="ai-agent-name-version">
+                  <h2>{{ data.currentApp.name }}</h2>
+                  <p>{{ data.currentApp.currentVersion }}</p>
+                </div>
+                <div>
+                  <p>{{ data.currentApp.description.short }}</p>
+                </div>
+              </div>
+            </div>
+            <div class="ai-agent-overview-operater-area">
+              <button class="btn">{{ SubscribeStatus }}</button>
+            </div>
+          </div>
+          <div class="ai-agent-overview-bottom">
+            <a-tabs default-active-key="1" centered>
+              <a-tab-pane key="1" tab="1">Content of Tab Pane 1</a-tab-pane>
+              <a-tab-pane key="2" tab="2">Content of Tab Pane 2</a-tab-pane>
+              <a-tab-pane key="3" tab="3">Content of Tab Pane 3</a-tab-pane>
+              <a-tab-pane key="4" tab="4">Content of Tab Pane 4</a-tab-pane>
+            </a-tabs>
+          </div>
+        </div>
       </div>
-      <div class="mini-program-list-empty" v-else>
+      <div class="ai-agent-list-empty" v-else>
         <a-empty>
           <template #image>
             <icon-apps />
@@ -126,7 +151,7 @@ onMounted(() => {
       </div>
     </a-scrollbar>
     <!-- 刷新按钮 -->
-    <a-button class="mini-program-list-left-refresh-btn" type="primary" shape="circle" :disabled="loading"
+    <a-button class="ai-agent-list-left-refresh-btn" type="primary" shape="circle" :disabled="loading"
       @click="fetchMiniProgramList">
       <icon-loading v-if="loading" spin />
       <icon-refresh v-else />
@@ -135,14 +160,14 @@ onMounted(() => {
 </template>
 
 <style lang="less" scoped>
-.mini-program {
+.ai-agent {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
   overflow: hidden;
   position: relative;
 
-  .mini-program-header {
+  .ai-agent-header {
     flex-shrink: 0;
     height: 55px;
     border-bottom: 1px solid var(--color-border-1);
@@ -152,13 +177,13 @@ onMounted(() => {
     align-items: center;
     justify-content: space-between;
 
-    .mini-program-header-title {
+    .ai-agent-header-title {
       flex-grow: 1;
       font-size: var(--font-size-lg);
       font-weight: 500;
     }
 
-    .mini-program-header-search {
+    .ai-agent-header-search {
       flex-shrink: 0;
 
       .search-input {
@@ -168,13 +193,13 @@ onMounted(() => {
     }
   }
 
-  .mini-program-list-container {
+  .ai-agent-list-container {
     flex: 1;
     min-height: 0;
     display: flex;
     justify-content: flex-start;
 
-    .mini-program-list-left {
+    .ai-agent-list-left {
       overflow-y: scroll;
       box-sizing: border-box;
       padding: 10px 0;
@@ -185,7 +210,7 @@ onMounted(() => {
       border-right: 2px solid var(--color-border-1);
       /* 防止在空间不足时缩小 */
 
-      .mini-program-card {
+      .ai-agent-card {
         width: 25vw;
         margin: 1vw;
         cursor: pointer;
@@ -204,12 +229,12 @@ onMounted(() => {
         }
       }
 
-      .mini-program-card:hover {
+      .ai-agent-card:hover {
         color: #EF4477;
       }
     }
 
-    .mini-program-list-empty {
+    .ai-agent-list-empty {
       width: 100%;
       height: 100%;
       display: flex;
@@ -219,25 +244,109 @@ onMounted(() => {
     }
   }
 
-  .mini-program-list-left-refresh-btn {
+  .ai-agent-list-left-refresh-btn {
     position: absolute;
     right: 15px;
     bottom: 15px;
     background-color: #EF4477;
   }
 
-  .mini-program-list-right {
+  .ai-agent-list-right {
     width: 80%;
     padding: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
 
-    .mini-program-avatar {
+    .ai-agent-avatar {
       display: flex;
-      flex-direction: column; 
-      align-items: center; 
+      flex-direction: column;
+      align-items: center;
       gap: 10px;
+    }
+  }
+
+  .ai-agent-overview {
+    height: 100%;
+    width: 100%;
+
+    .ai-agent-overview-top {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+
+      .ai-agent-overview-avatar-area {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        .ai-agent-name-version {
+          display: flex;
+          gap: 10px;
+          align-items: flex-start;
+
+          p {
+            font-weight: bold;
+          }
+        }
+      }
+
+      .ai-agent-overview-operater-area {
+
+        .btn-close {
+          cursor: copy !important;
+        }
+
+        .btn {
+          position: relative;
+          font-size: 13px;
+          text-transform: uppercase;
+          text-decoration: none;
+          padding: 1em 2.5em;
+          display: inline-block;
+          cursor: pointer;
+          border-radius: 6em;
+          transition: all 0.2s;
+          border: none;
+          font-family: inherit;
+          font-weight: 500;
+          color: #FFF;
+          background-color: #EF4477;
+        }
+
+        .btn:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:active {
+          transform: translateY(-1px);
+          box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn::after {
+          content: "";
+          display: inline-block;
+          height: 100%;
+          width: 100%;
+          border-radius: 100px;
+          position: absolute;
+          top: 0;
+          left: 0;
+          z-index: -1;
+          transition: all 0.4s;
+        }
+
+        .btn::after {
+          background-color: #EF4477;
+        }
+
+        .btn:hover::after {
+          transform: scaleX(1.4) scaleY(1.6);
+          opacity: 0;
+        }
+      }
     }
   }
 }

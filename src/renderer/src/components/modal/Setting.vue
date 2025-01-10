@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { Message, Modal } from '@arco-design/web-vue'
-import chatModels from '@renderer/assets/json/chat-models.json'
 import { useAssistantStore } from '@renderer/store/assistant'
 import { useCalendarStore } from '@renderer/store/calendar'
 import { useChatPluginStore } from '@renderer/store/chat-plugin'
@@ -292,8 +291,9 @@ onMounted(() => {
             <a-space direction="vertical" :size="25" fill class="setting-tab-content">
               <!-- 在这里添加用户页面的内容 -->
               <div>{{ $t('setting.app.user.userinfo.account') }}</div>
+              <div>{{ userStore.user.user_phone_number }}</div>
               <div>{{ $t('setting.app.user.userinfo.userid') }}</div>
-              <div>{{ $t('setting.app.user.userinfo.area') }}</div>
+              <div>{{ userStore.user.user_id }}</div>
               <div>{{ $t('setting.app.user.userinfo.agentList') }}</div>
               <!-- 其他用户相关的组件 -->
             </a-space>

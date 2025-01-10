@@ -35,6 +35,7 @@ export const userLogin = (phonenumber: string, captcha: string) => {
     );
 };
 
+
 // 获取用户信息
 export const getUserInfo = (user_id: number) => {
     return httpService.post<IDataWithError<{ token: string }>>(

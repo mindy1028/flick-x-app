@@ -1,14 +1,5 @@
-import { chat2deepSeek } from '@renderer/utils/big-model/deep-seek-util'
-import { chat2ernie, drawingByERNIE } from '@renderer/utils/big-model/ernie-bot-util'
-import { chat2gemini } from '@renderer/utils/big-model/gemini-util'
-import { chat2moonshot } from '@renderer/utils/big-model/moonshot-util'
-import { chat2ollama } from '@renderer/utils/big-model/ollama-util'
+// import { chat2deepSeek } from '@renderer/utils/big-model/deep-seek-util'
 import { chat2openai, drawingByOpenAI, speechByOpenAI } from '@renderer/utils/big-model/openai-util'
-import { chat2spark, drawingBySpark } from '@renderer/utils/big-model/spark-util'
-import { chat2step } from '@renderer/utils/big-model/step-util'
-import { chat2tiangong } from '@renderer/utils/big-model/tiangong-util'
-import { chat2tongyi, drawingByTongyi } from '@renderer/utils/big-model/tongyi-util'
-import { chat2zhipu, drawingByZhipu } from '@renderer/utils/big-model/zhipu-util'
 
 type ChatFunctionMap = {
   [provider in BigModelProvider]: (option: CommonChatOption) => Promise<any>

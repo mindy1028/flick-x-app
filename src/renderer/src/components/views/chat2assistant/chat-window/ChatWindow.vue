@@ -642,9 +642,9 @@ onBeforeUnmount(() => {
                 :default-checked="multipleChoiceList.includes(msg.id)" @change="multipleChoiceChange(msg.id)" />
               <!-- 消息头像 -->
               <div class="chat-message-avatar">
-                <UserAvatar v-if="msg.role === 'user'" :size="30" />
+                <UserAvatar v-if="msg.role === 'user'" :size="50" />
                 <AssistantAvatar v-else-if="msg.role === 'assistant'" 
-                  :size="30" />
+                  :size="50" />
               </div>
               <!-- 消息内容 -->
               <div class="chat-message-content select-text">
@@ -691,7 +691,7 @@ onBeforeUnmount(() => {
         <!-- 等待回答占位显示 -->
         <div v-if="waitAnswer" class="chat-message">
           <div class="chat-message-avatar">
-            <AssistantAvatar :size="30" />
+            <AssistantAvatar :size="50" />
           </div>
           <div class="chat-message-content">
             <a-spin :size="15" />

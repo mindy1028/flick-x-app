@@ -1,5 +1,5 @@
 import { httpService } from '../utils/axios'
-import { IDataWithError } from '../model/IDataWithError';
+import { IDataWithError, IFlickXGetAllDataWithError } from '../model/IDataWithError';
 
 //  获取智能体列表
 export const agentSelectAll = () => {

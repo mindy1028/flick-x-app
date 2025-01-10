@@ -1,7 +1,9 @@
 import axiosRetry from 'axios-retry';
 import axios, { AxiosError, AxiosInstance, AxiosPromise, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { IDataWithError } from '../model/IDataWithError';
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 class HttpService {
     private http!: AxiosInstance;
 
@@ -66,7 +68,7 @@ class HttpService {
                         // const instance = Message.error('用户信息过期，请重新登录');
                         setTimeout(() => {
                             // instance.close();
-                            // router.push('/login');
+                            router.push('/login');
                         }, 1000);
                         break;
                     default:
@@ -93,6 +95,7 @@ class HttpService {
     private async handleErrorWrapper<T>(p: AxiosPromise): Promise<IDataWithError<T>> {
         return p
             .then((response) => {
+                console.log(response.data, 111)
                 return response.data;
             })
             .catch((error: AxiosError) => {

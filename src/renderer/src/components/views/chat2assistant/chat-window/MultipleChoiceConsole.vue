@@ -193,10 +193,10 @@ const shareModalBeforeOk = async () => {
         <div id="share-chat-message-list" class="chat-message-list">
           <div v-for="msg in getSelectChatMessageList()" :key="msg.id" class="chat-message">
             <div class="chat-message-avatar">
-              <UserAvatar v-if="msg.role === 'user'" :size="30" />
+              <UserAvatar v-if="msg.role === 'user'" :size="50" />
               <AssistantAvatar
                 v-else-if="msg.role === 'assistant'"
-                :size="30"
+                :size="50"
               />
             </div>
             <div class="chat-message-content select-text">

@@ -8,15 +8,19 @@ import { userGetCaptcha, userLogin, getUserInfo } from "@renderer/api/userapi";
 import Crypoto from "@renderer/utils/crypto";
 import { UserDataModel } from "@renderer/model/IUserDataModel";
 import { Notification } from '@arco-design/web-vue';
+import { useRouter } from "vue-router";
 
 const userStore = useUserStore()
 const systemStore = useSystemStore()
 
-const phoneNumber = ref("15810559059");
-const phoneCaptcha = ref("462032");
+const router = useRouter();
+const phoneNumber = ref("");
+const phoneCaptcha = ref("");
 const captcha_message = ref("获取验证码");
 const captcha_state = ref(false);
 const has_read = ref(false);
+
+const logining = ref(false)
 
 type CheckPhoneNumberResult = {
   isOk: boolean;
@@ -80,7 +84,6 @@ async function getCaptcha() {
   }
 
   var verificationButtonStateCount = 60;
-  var verificationButtonStateState = true;
   captcha_state.value = true;
   const intervalId = setInterval(() => {
     if (verificationButtonStateCount > 0) {
@@ -90,7 +93,6 @@ async function getCaptcha() {
       clearInterval(intervalId);
       captcha_state.value = false;
       captcha_message.value = "重新获取";
-      verificationButtonStateState = false;
       verificationButtonStateCount = 0;
     }
   }, 1000);
@@ -113,21 +115,22 @@ async function viewUserLogin() {
     // 调用userGetCaptcha函数
     const response = await userLogin(phoneNumber.value, encryptStr);
     console.log(response)
+    console.log(response.code)
     // 处理响应
     if (response.code != 200) {
       // 处理错误情况
       // notify("登录失败", response.msg ? response.msg : "", "error");
-      Notification.error({ title: '登录失败', content: response.msg ? response.msg : "" })
+      Notification.error({ title: '登录失败', content: response.data.error_msg ? response.data.error_msg : "" })
       console.log("登录失败")
     } else {
       // 获取用户信息
       try {
-        if (response.data.data.isSuccess == 0) {
+        if (response.data.isSuccess == 0) {
           Notification.error({ title: '登录失败', content: "服务器异常" })
           console.log("登录失败")
           return
         }
-        const response_user_info = await getUserInfo(response.data.data.user_id);
+        const response_user_info = await getUserInfo(response.data.user_id);
         if (response_user_info.code != 200) {
           // notify("", "登录失败,用户信息获取失败", "error");
           Notification.error({ title: '', content: "登录失败,用户信息获取失败" })
@@ -136,27 +139,10 @@ async function viewUserLogin() {
           // notify("", "登录成功", "success");
           Notification.success({ title: '', content: "登录成功" })
           // console.log(response_user_info.data)
-          const userDataModel = UserDataModel.fromJson(
+          userStore.user = UserDataModel.fromJson(
             JSON.stringify(response_user_info.data)
           );
-          console.log(userDataModel)
-          console.log(userDataModel.user_id)
-
-          if (
-            nowTimestamp() - userStore.lastStartupTime > 24 * 60 * 60 * 1000 ||
-            !systemStore.isStartup
-          ) {
-            for (let i = 0; i < data.providers.length; i++) {
-              await simulateThreadWait(200)
-              providerShowIndex.value++
-            }
-            await simulateThreadWait(2000)
-          }
-          if (systemStore.isStartup) {
-            systemStore.isStartup = true
-            systemStore.isWelcomeShow = true
-            userStore.lastStartupTime = nowTimestamp()
-          }
+          router.push({ name: "MainPage" });
         }
       } catch (error) {
         // 处理请求错误
@@ -226,8 +212,18 @@ onMounted(() => {
               </div>
             </div>
             <button class="pushable">
-              <span class="edge"></span>
-              <span class="front" @click="viewUserLogin()"> 立即登录 </span>
+              <div v-if="!logining">
+                <span class="edge"></span>
+                <span class="front" @click="viewUserLogin()"> 立即登录 </span>
+              </div>
+              <div v-else>
+                <span class="edge"></span>
+                <span class="front">
+                  <div class="loader">
+                    <div class="justify-content-center jimu-primary-loading"></div>
+                  </div>
+                </span>
+              </div>
             </button>
           </div>
         </div>
@@ -386,6 +382,7 @@ onMounted(() => {
     background: transparent;
     padding: 0px;
     border: none;
+    height: 50px;
     cursor: pointer;
     outline-offset: 4px;
     outline-color: deeppink;
@@ -483,5 +480,84 @@ onMounted(() => {
     color: #000;
     font-weight: bold;
   }
+
+  .loader {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+
+  .jimu-primary-loading:before,
+  .jimu-primary-loading:after {
+    position: absolute;
+    top: 0;
+    content: '';
+  }
+
+  .jimu-primary-loading:before {
+    left: -19.992px;
+  }
+
+  .jimu-primary-loading:after {
+    left: 19.992px;
+    -webkit-animation-delay: 0.32s !important;
+    animation-delay: 0.32s !important;
+  }
+
+  .jimu-primary-loading:before,
+  .jimu-primary-loading:after,
+  .jimu-primary-loading {
+    background: #EF4477;
+    -webkit-animation: loading-keys-app-loading 0.8s infinite ease-in-out;
+    animation: loading-keys-app-loading 0.8s infinite ease-in-out;
+    width: 13.6px;
+    height: 40px;
+  }
+
+  .jimu-primary-loading {
+    text-indent: -9999em;
+    margin: auto;
+    position: absolute;
+    right: calc(50% - 6.8px);
+    top: calc(50% - 8px);
+    -webkit-animation-delay: 0.16s !important;
+    animation-delay: 0.16s !important;
+  }
+
+  @-webkit-keyframes loading-keys-app-loading {
+    0%,
+    80%,
+    100% {
+      opacity: .75;
+      box-shadow: 0 0 #EF4477;
+      height: 10px;
+    }
+
+    40% {
+      opacity: 1;
+      box-shadow: 0 -8px #EF4477;
+      height: 25px;
+    }
+  }
+
+  @keyframes loading-keys-app-loading {
+
+    0%,
+    80%,
+    100% {
+      opacity: .75;
+      box-shadow: 0 0 #EF4477;
+      height: 10px;
+    }
+
+    40% {
+      opacity: 1;
+      box-shadow: 0 -8px #EF4477;
+      height: 25px;
+    }
+  }
+
 }
 </style>
