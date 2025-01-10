@@ -134,43 +134,37 @@ interface CalendarReport {
   endTime: number
 }
 
-interface MiniProgramChangeLog {
-  currentVersion: string; // 对应 JSON 中的 "currentVersion"
-  updateTime: string; // 对应 JSON 中的 "updateTime"
-  updateDescription: string; // 对应 JSON 中的 "updateDescription"
+interface MiniProgram {
+  agentId: string;
+  name: string;
+  nickname: string;
+  isActive: number; // 假设 isActive 是一个数字类型，0 表示不激活，1 表示激活
+  cost: string; // 成本，字符串类型
+  currentVersion: string; // 当前版本，字符串类型
+  avatar: string; // 头像 URL，字符串类型
+  description: {
+    short: string;
+    medium: string;
+    long: string;
+  };
+  features: {
+    title: string;
+    feature: string[];
+  }[];
+  usageInstructions: {
+    overview: string;
+    attentionMatters: string[];
+    technicalSupport: string[];
+  };
+  changeLog: {
+    currentVersion: string;
+    updateTime: string; // 更新时间，字符串类型
+    updateDescription: string;
+  }[];
 }
 
-interface MiniProgram {
-  agentId: string; // 对应 JSON 中的 "agentId"
-  name: string; // 对应 JSON 中的 "name"
-  nickname: string; // 对应 JSON 中的 "nickname"
-  isActive: number; // 对应 JSON 中的 "isActive"，转换为布尔类型
-  cost: number; // 对应 JSON 中的 "cost"，转换为数字类型
-  currentVersion: string; // 对应 JSON 中的 "currentVersion"
-  avatar: string;
-  description: { // 对应 JSON 中的 "description"
-    short: string; // 对应 JSON 中的 "short"
-    medium: string; // 对应 JSON 中的 "medium"
-    long: string; // 对应 JSON 中的 "long"
-  };
-  features: { // 对应 JSON 中的 "features"
-    requirementsAnalysis: { // 对应 JSON 中的 "requirementsAnalysis"
-      documentReading: string; // 对应 JSON 中的 "documentReading"
-      informationExtraction: string; // 对应 JSON 中的 "informationExtraction"
-    };
-    codeWriting: { // 对应 JSON 中的 "codeWriting"
-      codeGeneration: string; // 对应 JSON 中的 "codeGeneration"
-      codeModification: string; // 对应 JSON 中的 "codeModification"
-    };
-    fileManagement: { // 对应 JSON 中的 "fileManagement"
-      localFileManagement: string; // 对应 JSON 中的 "localFileManagement"
-    };
-  };
-  usageInstructions: { // 对应 JSON 中的 "usageInstructions"
-    overview: string; // 对应 JSON 中的 "overview"
-    attentionMatters: string[]; // 对应 JSON 中的 "attentionMatters"
-  };
-  changeLog: MiniProgramChangeLog[];
+interface AgentsList {
+  agents: Agent[];
 }
 
 interface AppNotification {

@@ -10,8 +10,23 @@ const settingStore = useSettingStore()
 // ref
 const miniProgramRef = ref()
 const SubscribeStatus = ref("订阅")
-const activeKey = ref('1')
-
+const columns = ref([
+          {
+            title: '版本号',
+            dataIndex: 'currentVersion',
+            key: 'currentVersion',
+          },
+          {
+            title: '变更时间',
+            dataIndex: 'updateTime',
+            key: 'updateTime',
+          },
+          {
+            title: '变更描述',
+            dataIndex: 'updateDescription',
+            key: 'updateDescription',
+          },
+        ])
 // 数据绑定
 const data = reactive({
   loading: false,
@@ -132,11 +147,29 @@ onMounted(() => {
             </div>
           </div>
           <div class="ai-agent-overview-bottom">
-            <a-tabs default-active-key="1" centered>
-              <a-tab-pane key="1" tab="1">Content of Tab Pane 1</a-tab-pane>
-              <a-tab-pane key="2" tab="2">Content of Tab Pane 2</a-tab-pane>
-              <a-tab-pane key="3" tab="3">Content of Tab Pane 3</a-tab-pane>
-              <a-tab-pane key="4" tab="4">Content of Tab Pane 4</a-tab-pane>
+            <a-tabs default-active-key="1" position="top">
+              <a-tab-pane style="overflow-y: scroll !important;" key="1" title="概述">
+                <div style="display: flex; flex-direction: column; align-items: center; margin-top: 10px; text-align: center;">
+                  <img src="../../../assets/images/cybertron.png" width="250px">
+                  <h3>{{ data.currentApp.description.medium }}</h3>
+                  <div style="width: 100px; height: 2px; background-color: #000; margin-bottom: 10px;"></div>
+                </div>
+                  <span style="font-size: 16px; letter-spacing: 2px; line-height: 30px;">{{ data.currentApp.description.long }}</span>
+              </a-tab-pane>
+              <a-tab-pane style="overflow-y: scroll !important;" key="2" title="使用说明">
+                <div>
+                  <h3>{{ data.currentApp.usageInstructions.overview }}</h3>
+                  <div v-for="c in data.currentApp.features" :key="c.title">
+                    <h2>🙌{{ c.title }}</h2>
+                    <div v-for="p in c.feature" :key="p">
+                    <p>✨{{ p }}</p>
+                    </div>
+                  </div>
+                </div>
+              </a-tab-pane>
+              <a-tab-pane style="overflow-y: scroll !important;" key="3" title="变更记录">
+                <a-table :dataSource="data.currentApp.changeLog" :columns="columns" :rowKey="record => record.currentVersion"/>
+              </a-tab-pane>
             </a-tabs>
           </div>
         </div>
@@ -347,6 +380,10 @@ onMounted(() => {
           opacity: 0;
         }
       }
+    }
+
+    .ai-agent-overview-bottom {
+      overflow-y: scroll;
     }
   }
 }
