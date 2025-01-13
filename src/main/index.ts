@@ -99,6 +99,7 @@ ipcMain.handle('save-file-by-url', async (_event, url: string, fileName: string)
   creatTempPath()
   // 请求文件
   const fetchResp = await fetch(url)
+  console.log(url, 1111111111111111111111111)
   const blob = await fetchResp.blob()
 
   // 将blob写入文件

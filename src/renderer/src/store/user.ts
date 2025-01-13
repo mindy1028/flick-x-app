@@ -4,7 +4,7 @@ import { UserDataModel } from "@renderer/model/IUserDataModel";
 export const useUserStore = defineStore({
   id: 'user',
   state: () => ({
-    user: UserDataModel
+    user: {} as UserDataModel
   }),
   getters: {
     getStoreJson(): string {

@@ -123,6 +123,7 @@ watch(
   () => data.currentAssistant.chatMessageList,
   () => {
     nextTick(() => {
+  console.log(data.currentAssistant)
       calcToBottomShow()
     })
   },

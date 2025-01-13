@@ -207,7 +207,9 @@ const importDataBackup = () => {
         if (selectFileResult) {
           let importFlag = false
           systemStore.globalLoading = true
+          console.log("selectFileResult", selectFileResult)
           const dataBackup = JSON.parse(new TextDecoder().decode(selectFileResult))
+          console.log("dataBackup", dataBackup)
           importFlag = userStore.setStoreFromJson(dataBackup.userStore) || importFlag
           importFlag = assistantStore.setStoreFromJson(dataBackup.assistantStore) || importFlag
           importFlag =

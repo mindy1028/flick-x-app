@@ -21,27 +21,6 @@ defineProps({
 })
 const assistant = defineModel<Assistant>('assistant', { default: () => ({}) })
 
-watch(
-  () => assistant.value.provider,
-  (value) => {
-    if (chatModels[value] && chatModels[value][0]) {
-      assistant.value.model = chatModels[value][0].name
-    } else {
-      assistant.value.model = ''
-    }
-
-    // 发音参数
-    if (value === 'FlickX') {
-      assistant.value.speechModel = 'tts-1'
-      assistant.value.speechVoice = 'alloy'
-      assistant.value.speechSpeed = 1.0
-    } else {
-      assistant.value.speechModel = undefined
-      assistant.value.speechVoice = undefined
-      assistant.value.speechSpeed = undefined
-    }
-  }
-)
 </script>
 
 <template>

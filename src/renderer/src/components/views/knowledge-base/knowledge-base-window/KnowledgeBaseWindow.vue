@@ -70,7 +70,7 @@ const sendQuestion = () => {
   if (!settingStore.FlickX.baseUrl || !settingStore.FlickX.key) {
     Modal.confirm({
       title: t('common.configError'),
-      content: t(`chatWindow.configMiss.OpenAI`),
+      content: t(`chatWindow.configMiss.FlickX`),
       okText: t('common.goSetting'),
       cancelText: t('common.cancel'),
       onOk: () => {
@@ -127,7 +127,7 @@ const handleNewFileModalBeforeOk = async () => {
     if (!settingStore.FlickX.baseUrl || !settingStore.FlickX.key) {
       Modal.confirm({
         title: t('common.configError'),
-        content: t(`chatWindow.configMiss.OpenAI`),
+        content: t(`chatWindow.configMiss.FlickX`),
         okText: t('common.goSetting'),
         cancelText: t('common.cancel'),
         onOk: () => {

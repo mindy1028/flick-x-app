@@ -1,3 +1,5 @@
+import { PriceDataModel } from '@renderer/model/IPriceDataModel';
+
 export interface IDataWithError<T> {
     data: T;        // 存放实际的数据
     code: number;   // 存放响应的状态码
@@ -14,4 +16,9 @@ export interface IUserLoginDataWithError extends IDataWithError<{
 export interface IFlickXGetAllDataWithError extends IDataWithError<{
 }> {
     data: MiniProgram[];
+}
+
+export interface IPriceGetAllDataWithError extends IDataWithError<{
+}> {
+    data: PriceDataModel[];
 }

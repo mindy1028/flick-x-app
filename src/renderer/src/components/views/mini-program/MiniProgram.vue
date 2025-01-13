@@ -2,6 +2,9 @@
 import AssistantAvatar from '@renderer/components/avatar/AssistantAvatar.vue'
 import { useSettingStore } from '@renderer/store/setting'
 import { agentSelectAll } from "@renderer/api/agentapi"
+import { priceGetCine } from "@renderer/api/priceapi"
+import { PriceDataModel } from '@renderer/model/IPriceDataModel';
+import Payment from "@renderer/components/modal/Payment.vue"
 import { computed, nextTick, onMounted, reactive, ref, toRefs } from 'vue'
 
 // store
@@ -11,24 +14,26 @@ const settingStore = useSettingStore()
 const miniProgramRef = ref()
 const SubscribeStatus = ref("订阅")
 const columns = ref([
-          {
-            title: '版本号',
-            dataIndex: 'currentVersion',
-            key: 'currentVersion',
-          },
-          {
-            title: '变更时间',
-            dataIndex: 'updateTime',
-            key: 'updateTime',
-          },
-          {
-            title: '变更描述',
-            dataIndex: 'updateDescription',
-            key: 'updateDescription',
-          },
-        ])
+  {
+    title: '版本号',
+    dataIndex: 'currentVersion',
+    key: 'currentVersion',
+  },
+  {
+    title: '变更时间',
+    dataIndex: 'updateTime',
+    key: 'updateTime',
+  },
+  {
+    title: '变更描述',
+    dataIndex: 'updateDescription',
+    key: 'updateDescription',
+  },
+])
+
 // 数据绑定
 const data = reactive({
+  paymentModalVisible: false,
   loading: false,
   miniProgramList: [] as MiniProgram[],
   miniProgramListStyle: {
@@ -38,13 +43,14 @@ const data = reactive({
   },
   keyword: '',
   currentApp: {} as MiniProgram,
+  currentPrice: [] as PriceDataModel[],
   isWebviewShow: false
 })
 const { loading, miniProgramListStyle, keyword, currentApp, isWebviewShow } = toRefs(data)
 
 // appList 过滤
 const appListFilter = computed(() => {
-  return data.miniProgramList
+  return data.miniProgramList.filter((item) => item.name.includes(data.keyword))
 })
 
 // 打开应用
@@ -72,7 +78,7 @@ const watchAIAppSize = () => {
   resizeObserver.observe(miniProgramRef.value)
 }
 
-// 请求小程序列表
+// 请求Agent列表
 async function fetchMiniProgramList() {
   data.loading = true
 
@@ -85,11 +91,37 @@ async function fetchMiniProgramList() {
   data.loading = false
 }
 
+async function SubscribeClick() {
+  // 获取对应Agent的价格信息
+  const result = await priceGetCine()
+  if (result.code != 200) {
+    console.log("获取价格失败")
+    return
+  } else {
+    data.currentPrice = [] as PriceDataModel[]
+    const price_record = result.data.record_list as PriceDataModel[]
+    console.log(price_record)
+    for (var i = 0; i < price_record.length; i++) {
+      if (price_record[i].price_belong == data.currentApp.name) {
+        console.log(price_record[i].price_belong)
+        console.log(data.currentApp.name)
+        data.currentPrice.push(price_record[i])
+      }
+    }
+    console.log(data.currentPrice);
+  }
+  data.paymentModalVisible = true
+}
+
+const selectPayment = () => {
+
+}
+
 // 挂载完毕
 onMounted(() => {
   // 监听组件尺寸
   // watchAIAppSize()
-  // 请求小程序列表
+  // 请求Agent列表
   fetchMiniProgramList()
 })
 </script>
@@ -143,32 +175,35 @@ onMounted(() => {
               </div>
             </div>
             <div class="ai-agent-overview-operater-area">
-              <button class="btn">{{ SubscribeStatus }}</button>
+              <button class="btn" @click="SubscribeClick()">{{ SubscribeStatus }}</button>
             </div>
           </div>
           <div class="ai-agent-overview-bottom">
             <a-tabs default-active-key="1" position="top">
-              <a-tab-pane style="overflow-y: scroll !important;" key="1" title="概述">
-                <div style="display: flex; flex-direction: column; align-items: center; margin-top: 10px; text-align: center;">
+              <a-tab-pane key="1" title="概述">
+                <div
+                  style="display: flex; flex-direction: column; align-items: center; margin-top: 10px; text-align: center;">
                   <img src="../../../assets/images/cybertron.png" width="250px">
                   <h3>{{ data.currentApp.description.medium }}</h3>
                   <div style="width: 100px; height: 2px; background-color: #000; margin-bottom: 10px;"></div>
                 </div>
-                  <span style="font-size: 16px; letter-spacing: 2px; line-height: 30px;">{{ data.currentApp.description.long }}</span>
+                <span style="font-size: 16px; letter-spacing: 2px; line-height: 30px;">{{ data.currentApp.description.long
+                }}</span>
               </a-tab-pane>
-              <a-tab-pane style="overflow-y: scroll !important;" key="2" title="使用说明">
-                <div>
+              <a-tab-pane key="2" title="使用说明">
+                <div style="overflow: auto;     height: 65vh;">
                   <h3>{{ data.currentApp.usageInstructions.overview }}</h3>
                   <div v-for="c in data.currentApp.features" :key="c.title">
                     <h2>🙌{{ c.title }}</h2>
                     <div v-for="p in c.feature" :key="p">
-                    <p>✨{{ p }}</p>
+                      <p>✨{{ p }}</p>
                     </div>
                   </div>
                 </div>
               </a-tab-pane>
-              <a-tab-pane style="overflow-y: scroll !important;" key="3" title="变更记录">
-                <a-table :dataSource="data.currentApp.changeLog" :columns="columns" :rowKey="record => record.currentVersion"/>
+              <a-tab-pane key="3" title="变更记录">
+                <a-table :dataSource="data.currentApp.changeLog" :columns="columns"
+                  :rowKey="record => record.currentVersion" />
               </a-tab-pane>
             </a-tabs>
           </div>
@@ -189,6 +224,9 @@ onMounted(() => {
       <icon-loading v-if="loading" spin />
       <icon-refresh v-else />
     </a-button>
+
+    <Payment v-model:modalVisible="data.paymentModalVisible" v-model:agent="data.currentPrice"
+      @select-payment="selectPayment" />
   </div>
 </template>
 
